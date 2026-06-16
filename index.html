@@ -3,1447 +3,1608 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Katana OS — Command Center</title>
+<title>Katana OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg0:#05070F;--bg1:#090C17;--bg2:#0D1020;--bg3:#121528;--bg4:#171B30;--bg5:#1C2038;
-  --amber:#F5A623;--amber2:#FFC85A;--amber3:#C4841B;--amberA:rgba(245,166,35,0.15);--amberB:rgba(245,166,35,0.07);
-  --teal:#00D4A1;--teal2:#00FFD1;--teal3:#00A882;--tealA:rgba(0,212,161,0.15);--tealB:rgba(0,212,161,0.07);
-  --red:#FF3A5C;--red2:#FF6B84;--redA:rgba(255,58,92,0.15);--redB:rgba(255,58,92,0.07);
-  --violet:#9B72FF;--violet2:#C4AAFF;--violetA:rgba(155,114,255,0.15);--violetB:rgba(155,114,255,0.07);
-  --blue:#4A9EFF;--blueA:rgba(74,158,255,0.15);--blueB:rgba(74,158,255,0.07);
-  --gold:#FFD700;--goldA:rgba(255,215,0,0.15);
-  --t1:#E8EAFF;--t2:#9096B8;--t3:#555A78;--t4:#30334A;
-  --border:rgba(255,255,255,0.06);--borderB:rgba(255,255,255,0.11);--borderA:rgba(245,166,35,0.3);
-  --fD:'Orbitron',sans-serif;--fB:'Rajdhani',sans-serif;--fM:'Share Tech Mono',monospace;
-  --r1:4px;--r2:8px;--r3:12px;--r4:18px;--r5:24px;
+:root{
+  --paper:#ffffff;
+  --paper-soft:#fafafa;
+  --tint:#f5f0fd;
+  --tint-2:#ece1fb;
+  --line:#e8e3ef;
+  --line-strong:#d8cdee;
+  --ink:#16121c;
+  --ink-soft:#6e6779;
+  --ink-faint:#a39db1;
+  --violet:#6d28d9;
+  --violet-deep:#4c1d95;
+  --violet-bright:#7c3aed;
+  --radius:12px;
+  --radius-sm:7px;
+  --shadow-sm:0 1px 2px rgba(22,12,28,0.05);
+  --shadow-md:0 6px 20px rgba(35,12,70,0.08);
+  --font-display:'Space Grotesk',sans-serif;
+  --font-body:'Inter',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--fB);background:var(--bg0);color:var(--t1);min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.5}
-button{font-family:inherit;cursor:pointer;border:none;background:none}
-input,textarea,select{font-family:var(--fB);background:var(--bg3);color:var(--t1);border:1px solid var(--borderB);border-radius:var(--r1);padding:7px 10px;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-input:focus,textarea:focus,select:focus{border-color:var(--amber);box-shadow:0 0 0 2px var(--amberB)}
-input[type=number]{width:80px}
-select{cursor:pointer}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:var(--bg1)}
-::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper-soft);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+button{font-family:inherit;cursor:pointer;}
+input,select,textarea{font-family:inherit;}
+:focus-visible{outline:2px solid var(--violet);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
+}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px;}
+::-webkit-scrollbar-track{background:transparent;}
 
-/* BG SCANLINES + GRID */
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(245,166,35,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(245,166,35,.018) 1px,transparent 1px);
-  background-size:32px 32px}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(245,166,35,.05) 0%,transparent 70%)}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;letter-spacing:-0.01em;}
+.mono{font-family:var(--font-mono);}
+.muted{color:var(--ink-soft);}
+.faint{color:var(--ink-faint);}
+.hidden{display:none !important;}
 
-#particle-canvas{position:fixed;inset:0;pointer-events:none;z-index:9998}
+/* ---------- layout ---------- */
+#app{display:flex;min-height:100vh;}
 
-/* SCANLINE OVERLAY */
-.scanline{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
-  animation:scanMove 8s linear infinite}
-@keyframes scanMove{from{background-position:0 0}to{background-position:0 -100px}}
+.sidebar{
+  width:72px;flex:0 0 72px;
+  background:var(--paper);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;
+  padding:18px 0;gap:4px;
+  position:sticky;top:0;height:100vh;
+}
+.brand{
+  width:36px;height:36px;border-radius:9px;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  margin-bottom:18px;font-family:var(--font-display);font-weight:700;font-size:15px;
+  flex:0 0 auto;
+}
+.nav-btn{
+  width:48px;height:48px;border:none;background:transparent;border-radius:var(--radius-sm);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  color:var(--ink-faint);position:relative;transition:background .15s,color .15s;
+}
+.nav-btn .glyph{font-size:17px;line-height:1;}
+.nav-btn .lbl{font-size:9px;letter-spacing:.02em;font-weight:500;}
+.nav-btn:hover{background:var(--tint);color:var(--violet-deep);}
+.nav-btn.active{background:var(--tint-2);color:var(--violet-deep);}
+.nav-btn.active::before{
+  content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--violet);
+}
+.nav-spacer{flex:1;}
 
-#app{position:relative;z-index:1;min-height:100vh}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
 
-/* SIDEBAR */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:68px;z-index:100;
-  background:var(--bg1);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;padding:16px 0;gap:2px}
-.logo-wrap{width:42px;height:42px;background:var(--amber);border-radius:var(--r2);
-  display:flex;align-items:center;justify-content:center;margin-bottom:18px;
-  box-shadow:0 0 20px rgba(245,166,35,.4);flex-shrink:0}
-.logo-wrap span{font-family:var(--fD);font-weight:900;font-size:16px;color:var(--bg0);letter-spacing:-1px}
-.nav-btn{width:42px;height:42px;display:flex;align-items:center;justify-content:center;
-  border-radius:var(--r2);color:var(--t3);font-size:16px;cursor:pointer;
-  transition:all .15s;position:relative;border:1px solid transparent}
-.nav-btn:hover{background:var(--bg3);color:var(--t2);border-color:var(--border)}
-.nav-btn.active{background:var(--amberA);color:var(--amber);border-color:var(--borderA);
-  box-shadow:0 0 12px var(--amberB) inset}
-.nav-btn[data-tip]::after{content:attr(data-tip);position:absolute;left:calc(100% + 10px);
-  background:var(--bg3);color:var(--t1);padding:5px 10px;border-radius:var(--r2);
-  font-size:12px;white-space:nowrap;border:1px solid var(--borderB);opacity:0;pointer-events:none;
-  transition:opacity .15s;font-family:var(--fB);z-index:200}
-.nav-btn:hover[data-tip]::after{opacity:1}
-.nav-spacer{flex:1}
+.topbar{
+  position:sticky;top:0;z-index:5;background:rgba(255,255,255,0.92);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;gap:20px;flex-wrap:wrap;
+}
+.tb-left{display:flex;align-items:center;gap:14px;}
+.tb-name{font-family:var(--font-display);font-weight:600;font-size:15px;}
+.tb-season{font-size:12px;color:var(--ink-soft);}
+.tb-stats{display:flex;align-items:center;gap:22px;}
+.tb-stat{display:flex;flex-direction:column;align-items:flex-end;}
+.tb-stat .v{font-family:var(--font-mono);font-weight:600;font-size:15px;}
+.tb-stat .k{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);}
+.ring-wrap{display:flex;align-items:center;gap:10px;}
+.ring-text{display:flex;flex-direction:column;}
+.ring-text .title{font-family:var(--font-display);font-weight:600;font-size:13px;}
+.ring-text .sub{font-size:10.5px;color:var(--ink-soft);font-family:var(--font-mono);}
 
-.main{margin-left:68px;min-height:100vh}
-.view{display:none}.view.active{display:block}
+.view-root{padding:28px;max-width:1080px;width:100%;margin:0 auto;}
+.view{display:none;}
+.view.active{display:block;animation:fadein .2s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 
-/* HUD */
-.hud{position:sticky;top:0;z-index:50;background:rgba(5,7,15,.94);backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);padding:0 28px;height:58px;
-  display:flex;align-items:center;gap:16px}
-.hud-title{font-family:var(--fD);font-size:12px;font-weight:700;color:var(--t1);letter-spacing:2px;text-transform:uppercase}
-.hud-sp{flex:1}
-.hud-chip{display:flex;align-items:center;gap:7px;padding:5px 12px;
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2)}
-.hud-chip-label{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;font-family:var(--fD)}
-.hud-chip-val{font-family:var(--fM);font-size:13px;font-weight:700}
-.hud-chip-val.a{color:var(--amber)}.hud-chip-val.t{color:var(--teal)}.hud-chip-val.v{color:var(--violet)}
-.hud-date{font-size:11px;color:var(--t3);font-family:var(--fM)}
-.save-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);opacity:0;transition:opacity .3s}
-.save-dot.show{opacity:1}
+.section-title{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft);font-weight:600;margin:0 0 12px;}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+.grid{display:grid;gap:16px;}
+.grid-2{grid-template-columns:1fr 1fr;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+@media (max-width:760px){.grid-2,.grid-3{grid-template-columns:1fr;}}
 
-/* PAGE */
-.page{padding:24px 28px 80px;max-width:1280px}
+.row{display:flex;align-items:center;gap:10px;}
+.row.between{justify-content:space-between;}
+.stack{display:flex;flex-direction:column;gap:10px;}
 
-/* SECTION LABEL */
-.sec-lbl{font-family:var(--fD);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--t3);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.sec-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.btn{
+  border:1px solid var(--line-strong);background:var(--paper);color:var(--ink);
+  padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;transition:background .15s,color .15s,border-color .15s;
+}
+.btn:hover{background:var(--tint);}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:#fff;}
+.btn.primary:hover{background:var(--violet-deep);border-color:var(--violet-deep);}
+.btn.violet{background:var(--violet);border-color:var(--violet);color:#fff;}
+.btn.violet:hover{background:var(--violet-deep);}
+.btn.ghost{border-color:transparent;background:transparent;}
+.btn.ghost:hover{background:var(--tint);}
+.btn.danger{border-color:var(--ink);color:var(--ink);}
+.btn.danger:hover{background:var(--ink);color:#fff;}
+.btn.sm{padding:5px 10px;font-size:12px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn.block{width:100%;}
 
-/* PLAYER CARD */
-.dash-header{display:flex;gap:20px;margin-bottom:24px;align-items:flex-start}
-.player-card{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r4);
-  padding:22px 26px;position:relative;overflow:hidden}
-.player-card::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;
-  background:radial-gradient(circle,rgba(245,166,35,.07) 0%,transparent 70%);pointer-events:none}
-.player-card::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(245,166,35,.02) 0%,transparent 50%);pointer-events:none;border-radius:inherit}
-.rank-badge{display:inline-flex;align-items:center;gap:5px;
-  background:var(--amberA);border:1px solid var(--borderA);border-radius:100px;
-  padding:3px 12px;font-size:10px;font-weight:700;color:var(--amber);
-  text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;font-family:var(--fD)}
-.p-name{font-family:var(--fD);font-size:22px;font-weight:900;color:var(--t1);
-  letter-spacing:-1px;line-height:1.2}
-.p-season{font-size:13px;color:var(--t2);margin-top:4px;font-family:var(--fB);font-weight:500}
-.p-stats{display:flex;gap:18px;margin-top:18px}
-.p-stat .v{font-family:var(--fD);font-size:20px;font-weight:700;color:var(--t1)}
-.p-stat .v.a{color:var(--amber)}.p-stat .v.t{color:var(--teal)}
-.p-stat .l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;font-family:var(--fD)}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:600;background:var(--paper);}
+.pill.tint{background:var(--tint);border-color:var(--tint-2);color:var(--violet-deep);}
 
-/* XP CARD */
-.xp-card{width:300px;flex-shrink:0;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r4);padding:22px 26px}
-.xp-card-lbl{font-family:var(--fD);font-size:9px;color:var(--t3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
-.xp-big{font-family:var(--fD);font-size:36px;font-weight:900;color:var(--amber);
-  letter-spacing:-2px;line-height:1}
-.xp-big span{font-size:16px;color:var(--t3);letter-spacing:0}
-.xp-bar-wrap{height:8px;background:var(--bg4);border-radius:4px;margin:14px 0 6px;
-  overflow:hidden;position:relative}
-.xp-bar-fill{height:100%;border-radius:4px;
-  background:linear-gradient(90deg,var(--amber3),var(--amber),var(--amber2));
-  transition:width .7s cubic-bezier(.4,0,.2,1);position:relative}
-.xp-bar-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:16px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35))}
-.ms-row{display:flex;justify-content:space-between}
-.ms{font-family:var(--fM);font-size:10px;color:var(--t3);transition:color .3s}
-.ms.hit{color:var(--amber)}.ms.exc{color:var(--teal)}
+input[type=text],input[type=number],textarea,select{
+  border:1px solid var(--line-strong);border-radius:7px;padding:7px 10px;font-size:13px;color:var(--ink);background:var(--paper);width:100%;
+}
+input[type=number]{font-family:var(--font-mono);}
+textarea{resize:vertical;min-height:64px;}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink-soft);font-weight:600;}
 
-/* DAILY 5 */
-.d5-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
-.d5{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
-  padding:16px 14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
-  user-select:none}
-.d5:hover{border-color:var(--borderB);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.d5.done{border-color:var(--teal);background:var(--tealB)}
-.d5.done::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,212,161,.05) 0%,transparent 60%)}
-.d5-ck{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;
-  border:1.5px solid var(--borderB);display:flex;align-items:center;justify-content:center;
-  font-size:9px;color:transparent;transition:all .2s}
-.d5.done .d5-ck{background:var(--teal);border-color:var(--teal);color:#000}
-.d5-ico{font-size:20px;margin-bottom:8px}
-.d5.done .d5-ico{opacity:.7}
-.d5-q{font-size:12px;color:var(--t2);margin-bottom:6px;line-height:1.3;font-weight:500}
-.d5-xp{font-family:var(--fM);font-size:12px;font-weight:700;color:var(--amber)}
-.d5.done .d5-xp{color:var(--teal)}
+/* checkbox quest row */
+.qrow{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);}
+.qrow.done{background:var(--tint);border-color:var(--tint-2);}
+.qrow .chk{width:19px;height:19px;border:1.5px solid var(--line-strong);border-radius:5px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#fff;}
+.qrow.done .chk{background:var(--violet);border-color:var(--violet);color:#fff;}
+.qrow .name{flex:1;font-size:13.5px;font-weight:500;}
+.qrow.done .name{color:var(--ink-soft);text-decoration:line-through;}
+.qrow .tag{font-size:10.5px;color:var(--violet-deep);background:var(--tint);border-radius:6px;padding:2px 7px;font-weight:600;}
+.qrow .xp{font-family:var(--font-mono);font-size:12.5px;color:var(--ink-soft);min-width:44px;text-align:right;}
+.qrow button{background:transparent;border:none;flex:0 0 auto;}
 
-/* STREAK */
-.streak-sec{margin-bottom:24px}
-.streak-row{display:flex;gap:6px}
-.streak-cell{flex:1;padding:9px 6px;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r2);text-align:center;cursor:pointer;transition:all .15s}
-.streak-cell:hover{border-color:var(--borderB)}
-.streak-cell.hit{background:var(--tealB);border-color:var(--teal)}
-.streak-cell.today{border-color:var(--amber)}
-.sc-day{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-family:var(--fD)}
-.sc-ico{font-size:13px;margin-top:3px}
-.streak-cell.hit .sc-ico::before{content:'⚡'}
-.streak-cell.today:not(.hit) .sc-ico::before{content:'○'}
-.streak-cell:not(.hit):not(.today) .sc-ico::before{content:'·'}
-.flame-pill{display:inline-flex;align-items:center;gap:5px;background:var(--amberA);
-  border:1px solid var(--borderA);border-radius:100px;padding:3px 12px;
-  font-size:11px;font-weight:700;color:var(--amber);margin-left:10px;font-family:var(--fD)}
+.boss-card{border:1px solid var(--ink);border-radius:var(--radius);padding:20px;background:linear-gradient(180deg,var(--paper) 0%, var(--tint) 130%);}
+.boss-card .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;}
+.boss-card h3{font-size:20px;margin:6px 0 2px;}
+.boss-bar{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin:12px 0;}
+.boss-bar .fill{height:100%;background:var(--ink);}
 
-/* BOSS BATTLE (side quest highlight) */
-.boss-card{background:linear-gradient(135deg,rgba(255,58,92,.08) 0%,rgba(155,114,255,.06) 100%);
-  border:1px solid rgba(255,58,92,.3);border-radius:var(--r4);padding:18px 22px;
-  margin-bottom:24px;position:relative;overflow:hidden}
-.boss-card::before{content:'BOSS';position:absolute;right:18px;top:50%;transform:translateY(-50%);
-  font-family:var(--fD);font-size:48px;font-weight:900;color:rgba(255,58,92,.06);letter-spacing:4px}
-.boss-title{font-family:var(--fD);font-size:11px;color:var(--red2);letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px}
-.boss-name{font-family:var(--fD);font-size:18px;font-weight:700;color:var(--t1);margin-bottom:4px}
-.boss-desc{font-size:13px;color:var(--t2);margin-bottom:12px}
-.boss-row{display:flex;align-items:center;gap:12px}
-.boss-xp{font-family:var(--fM);font-size:14px;font-weight:700;color:var(--red2)}
-.boss-btn{padding:7px 18px;background:rgba(255,58,92,.15);border:1px solid rgba(255,58,92,.35);
-  border-radius:var(--r2);color:var(--red2);font-family:var(--fD);font-size:11px;font-weight:700;
-  cursor:pointer;letter-spacing:.1em;transition:all .15s}
-.boss-btn:hover{background:rgba(255,58,92,.25)}
-.boss-done{opacity:.5}
-.boss-done .boss-btn{cursor:default}
+.balance-bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;display:flex;}
+.balance-bar .pos{background:var(--violet);height:100%;}
+.balance-bar .neg{background:var(--ink);height:100%;}
 
-/* DASH PANELS */
-.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r4);overflow:hidden}
-.panel-hdr{padding:14px 18px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between}
-.panel-ttl{font-family:var(--fD);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.badge{font-size:10px;padding:3px 10px;border-radius:100px;font-weight:700;font-family:var(--fD)}
-.b-a{background:var(--amberA);color:var(--amber);border:1px solid var(--borderA)}
-.b-t{background:var(--tealA);color:var(--teal);border:1px solid rgba(0,212,161,.3)}
-.b-v{background:var(--violetA);color:var(--violet);border:1px solid rgba(155,114,255,.3)}
-.b-r{background:var(--redA);color:var(--red);border:1px solid rgba(255,58,92,.3)}
-.panel-body{padding:14px 18px}
+.progress{height:8px;border-radius:6px;background:var(--line);overflow:hidden;}
+.progress .fill{height:100%;background:var(--violet);border-radius:6px;}
 
-/* QUEST ITEMS */
-.qi{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:var(--r2);
-  background:var(--bg3);border:1px solid var(--border);cursor:pointer;
-  transition:all .15s;margin-bottom:7px;position:relative;user-select:none}
-.qi:hover{border-color:var(--borderB);background:var(--bg4)}
-.qi.done{opacity:.4}.qi.done .qi-name{text-decoration:line-through}
-.qi.epic{background:linear-gradient(90deg,rgba(245,166,35,.04),rgba(155,114,255,.03));border-color:rgba(245,166,35,.15)}
-.qi.epic .qi-name{color:var(--amber)}
-.qi-bar{width:3px;height:32px;border-radius:2px;flex-shrink:0}
-.qi-body{flex:1;min-width:0}
-.qi-name{font-size:13px;color:var(--t1);font-weight:600;font-family:var(--fB)}
-.qi-sub{font-size:11px;color:var(--t3);margin-top:1px;font-family:var(--fB)}
-.qi-r{display:flex;align-items:center;gap:7px;flex-shrink:0}
-.xp-pill{font-family:var(--fM);font-size:11px;font-weight:700;padding:3px 9px;border-radius:var(--r1)}
-.p-a{background:var(--amberB);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
-.p-t{background:var(--tealB);color:var(--teal);border:1px solid rgba(0,212,161,.2)}
-.p-v{background:var(--violetB);color:var(--violet);border:1px solid rgba(155,114,255,.2)}
-.p-r{background:var(--redB);color:var(--red);border:1px solid rgba(255,58,92,.2)}
-.p-b{background:var(--blueB);color:var(--blue);border:1px solid rgba(74,158,255,.2)}
-.bonus-pill{font-size:10px;padding:2px 7px;background:var(--goldA);color:var(--gold);
-  border-radius:var(--r1);font-family:var(--fD);font-weight:700}
-.qi-ck{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--borderB);
-  display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;
-  transition:all .2s;flex-shrink:0}
-.qi.done .qi-ck{background:var(--teal);border-color:var(--teal);color:#000}
+.ach-card,.reward-card{border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;background:var(--paper);}
+.ach-card.unlocked{border-color:var(--violet);background:var(--tint);}
+.ach-card .name{font-weight:700;font-size:13.5px;}
+.ach-card .desc{font-size:12px;color:var(--ink-soft);margin:2px 0 8px;}
 
-/* QUEST TABS */
-.qtabs{display:flex;gap:4px;margin-bottom:20px}
-.qtab{padding:7px 16px;border-radius:var(--r2);font-size:12px;font-weight:700;
-  color:var(--t3);cursor:pointer;border:1px solid transparent;transition:all .15s;
-  text-transform:uppercase;letter-spacing:.05em;font-family:var(--fD)}
-.qtab:hover{color:var(--t2);background:var(--bg2)}
-.qtab.active{color:var(--amber);background:var(--amberA);border-color:var(--borderA)}
-.qpanel{display:none}.qpanel.active{display:block}
-.qs-title{font-family:var(--fD);font-size:11px;font-weight:700;color:var(--t2);
-  margin-bottom:10px;display:flex;align-items:center;gap:8px;letter-spacing:.1em;text-transform:uppercase}
+.log-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;}
+.log-row:last-child{border-bottom:none;}
+.log-row .amt{font-family:var(--font-mono);font-weight:700;}
+.log-row .amt.gain{color:var(--violet-deep);}
+.log-row .amt.pen{color:var(--ink);background:var(--paper-soft);padding:2px 7px;border-radius:6px;}
+.log-row .meta{font-size:11px;color:var(--ink-faint);}
 
-/* ACHIEVEMENTS */
-.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
-.ach{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);
-  padding:18px;position:relative;overflow:hidden;transition:all .2s}
-.ach:hover{border-color:var(--borderB)}
-.ach.unlocked{border-color:rgba(245,166,35,.35)}
-.ach.unlocked::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--amber),transparent)}
-.ach.locked{opacity:.5}
-.ach-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.ach-ico{width:42px;height:42px;border-radius:var(--r2);display:flex;align-items:center;
-  justify-content:center;font-size:20px}
-.ach-ico.u{background:var(--amberA)}.ach-ico.l{background:var(--bg3)}
-.ach-xp{font-family:var(--fM);font-size:11px;font-weight:700}
-.ach-name{font-family:var(--fD);font-size:13px;font-weight:700;margin-bottom:3px;letter-spacing:.03em}
-.ach-desc{font-size:12px;color:var(--t2);margin-bottom:12px;line-height:1.4;font-weight:500}
-.prog-bar{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
-.prog-fill{height:100%;border-radius:2px;transition:width .5s}
-.prog-lbl{font-size:10px;color:var(--t3);margin-top:5px;font-family:var(--fM)}
-.ach-stamp{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;
-  background:var(--amber);color:var(--bg0);display:flex;align-items:center;justify-content:center;font-size:10px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;}
+.tab-btn{border:1px solid var(--line-strong);background:var(--paper);padding:7px 14px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+.tab-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
 
-/* REWARDS */
-.rw-timeline{position:relative}
-.rw-timeline::before{content:'';position:absolute;left:29px;top:8px;bottom:8px;
-  width:2px;background:var(--border)}
-.rw-item{display:flex;gap:18px;margin-bottom:16px;position:relative}
-.rw-node{width:60px;height:60px;border-radius:50%;flex-shrink:0;
-  background:var(--bg2);border:2px solid var(--border);
-  display:flex;align-items:center;justify-content:center;font-size:22px;
-  position:relative;z-index:1;transition:all .3s}
-.rw-item.unlocked .rw-node{border-color:var(--amber);background:var(--amberA);
-  box-shadow:0 0 20px var(--amberB)}
-.rw-item.next .rw-node{border-color:rgba(245,166,35,.35)}
-.rw-body{flex:1;padding:13px 18px;background:var(--bg2);border:1px solid var(--border);
-  border-radius:var(--r3);align-self:center;transition:all .3s}
-.rw-item.unlocked .rw-body{border-color:rgba(245,166,35,.25)}
-.rw-thresh{font-family:var(--fD);font-size:10px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;margin-bottom:3px}
-.rw-item.unlocked .rw-thresh{color:var(--teal)}
-.rw-item.next .rw-thresh{color:var(--amber)}
-.rw-item.locked .rw-thresh{color:var(--t3)}
-.rw-name{font-family:var(--fD);font-size:15px;font-weight:700;margin-bottom:3px;letter-spacing:.02em}
-.rw-desc{font-size:12px;color:var(--t2);font-weight:500}
-.rw-status{font-size:11px;margin-top:7px;font-weight:700;font-family:var(--fD)}
-.rw-item.unlocked .rw-status{color:var(--teal)}
-.rw-item.next .rw-status{color:var(--amber)}
+.skill-domain{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;}
+.skill-node{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);}
+.skill-node:first-of-type{border-top:none;}
+.node-dot{width:10px;height:10px;border-radius:50%;background:var(--line-strong);flex:0 0 auto;}
+.node-dot.on{background:var(--violet);}
+.skill-node .nname{flex:1;font-size:13px;}
+.skill-node.on .nname{font-weight:600;}
+.skill-node .nxp{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-faint);}
 
-/* SKILL TREE */
-.sk-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.sk-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r4);padding:20px}
-.sk-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.sk-title{font-family:var(--fD);font-size:12px;font-weight:700;letter-spacing:.05em}
-.sk-xp{font-family:var(--fM);font-size:11px;font-weight:700;padding:3px 9px;border-radius:var(--r1)}
-.sk-lv{font-size:11px;color:var(--t3);margin-bottom:12px;font-family:var(--fM)}
-.sk-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-bottom:14px}
-.sk-fill{height:100%;border-radius:3px;transition:width .5s}
-.sk-nodes{display:flex;flex-direction:column;gap:6px}
-.sk-node{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--t3);
-  padding:7px 11px;border-radius:var(--r1);background:var(--bg3);border:1px solid var(--border);
-  font-weight:600;transition:all .2s}
-.sk-node.on{color:var(--t1);border-color:var(--borderB)}
-.sk-ni{font-size:12px;width:18px;text-align:center}
-.sk-ns{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-family:var(--fD)}
-.sk-node.on .sk-ns{color:var(--teal)}.sk-node:not(.on) .sk-ns{color:var(--t4)}
+.timer-display{font-family:var(--font-mono);font-size:64px;font-weight:600;text-align:center;letter-spacing:-1px;}
+.preset-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 
-/* XP LOG */
-.log-list{display:flex;flex-direction:column;gap:6px}
-.log-entry{display:flex;align-items:center;gap:12px;padding:10px 14px;
-  background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2)}
-.log-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.log-desc{flex:1;font-size:13px;color:var(--t1);font-weight:600}
-.log-cat{font-size:10px;color:var(--t3);font-family:var(--fD);letter-spacing:.05em}
-.log-time{font-size:10px;color:var(--t3);font-family:var(--fM)}
-.log-xp{font-family:var(--fM);font-size:13px;font-weight:700;color:var(--teal)}
+.admin-section{border-bottom:1px solid var(--line);padding:22px 0;}
+.admin-section:first-child{padding-top:0;}
+.admin-section:last-child{border-bottom:none;}
+.edit-row{display:grid;grid-template-columns:1fr 110px 80px 32px;gap:8px;align-items:center;margin-bottom:8px;}
+.edit-row.q{grid-template-columns:1fr 130px 80px 32px;}
+.edit-row.lvl{grid-template-columns:1fr 110px 32px;}
+.edit-row.rw{grid-template-columns:1fr 100px 32px;}
+.edit-row.ach{grid-template-columns:1fr 1fr 150px 80px 32px;}
+.edit-row.node{grid-template-columns:1fr 100px 32px;}
+.edit-row.pen{grid-template-columns:1fr 100px 32px;}
+@media (max-width:700px){
+  .edit-row,.edit-row.q,.edit-row.lvl,.edit-row.rw,.edit-row.ach,.edit-row.node,.edit-row.pen{grid-template-columns:1fr;}
+}
+.icon-btn{width:30px;height:30px;border:1px solid var(--line-strong);border-radius:7px;background:var(--paper);display:flex;align-items:center;justify-content:center;color:var(--ink-soft);}
+.icon-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+.danger-box{border:1px solid var(--ink);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:10px;}
+.danger-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+.danger-row .txt{font-size:12.5px;color:var(--ink-soft);max-width:420px;}
 
-/* FOCUS TIMER */
-.timer-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r4);
-  padding:22px;margin-bottom:24px}
-.timer-display{font-family:var(--fD);font-size:48px;font-weight:900;color:var(--amber);
-  letter-spacing:-2px;text-align:center;margin:16px 0;
-  text-shadow:0 0 30px rgba(245,166,35,.4)}
-.timer-display.running{color:var(--teal);text-shadow:0 0 30px rgba(0,212,161,.4)}
-.timer-btns{display:flex;gap:8px;justify-content:center}
-.t-preset{padding:5px 14px;background:var(--bg3);border:1px solid var(--borderB);
-  border-radius:var(--r2);color:var(--t2);font-family:var(--fD);font-size:11px;
-  cursor:pointer;transition:all .15s;font-weight:700}
-.t-preset:hover{border-color:var(--amber);color:var(--amber)}
-.t-preset.active{background:var(--amberA);border-color:var(--borderA);color:var(--amber)}
+.empty{padding:30px 10px;text-align:center;color:var(--ink-faint);font-size:13px;}
 
-/* ADMIN */
-.admin-notice{background:var(--amberB);border:1px solid rgba(245,166,35,.2);
-  border-radius:var(--r3);padding:12px 18px;margin-bottom:20px;
-  font-size:13px;color:var(--t2);display:flex;align-items:center;gap:10px;font-weight:500}
-.admin-sec{margin-bottom:32px}
-.admin-sec-title{font-family:var(--fD);font-size:12px;font-weight:700;letter-spacing:.15em;
-  text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:8px;color:var(--t1)}
-.admin-tbl{width:100%;border-collapse:collapse}
-.admin-tbl th{text-align:left;font-size:10px;font-weight:700;color:var(--t3);
-  text-transform:uppercase;letter-spacing:.1em;padding:7px 10px;
-  background:var(--bg1);border-bottom:1px solid var(--border);font-family:var(--fD)}
-.admin-tbl td{padding:8px 10px;border-bottom:1px solid var(--border);
-  font-size:13px;color:var(--t1);background:var(--bg2);vertical-align:middle}
-.admin-tbl tr:hover td{background:var(--bg3)}
-.admin-tbl input{width:100%;background:var(--bg3);border:1px solid var(--border);
-  border-radius:var(--r1);padding:6px 8px;font-size:13px;color:var(--t1)}
-.admin-tbl input:focus{border-color:var(--amber);outline:none}
-.admin-tbl input[type=number]{width:75px}
-.admin-tbl select{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r1);
-  padding:6px 8px;font-size:13px;color:var(--t1);min-width:110px}
-.settings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px}
-.setting-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);padding:16px}
-.setting-card label{display:block;font-size:10px;color:var(--t3);font-weight:700;
-  text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px;font-family:var(--fD)}
-.setting-card input,.setting-card select{width:100%}
-.setting-hint{font-size:11px;color:var(--t3);margin-top:5px;font-weight:500}
-.rm-btn{width:28px;height:28px;border-radius:var(--r1);background:var(--redB);color:var(--red);
-  border:1px solid rgba(255,58,92,.2);display:flex;align-items:center;justify-content:center;
-  font-size:11px;cursor:pointer;transition:all .15s;flex-shrink:0}
-.rm-btn:hover{background:rgba(255,58,92,.25)}
+/* toasts */
+#toasts{position:fixed;bottom:22px;right:22px;display:flex;flex-direction:column;gap:8px;z-index:200;}
+.toast{background:var(--ink);color:#fff;padding:11px 16px;border-radius:9px;font-size:13px;font-weight:500;box-shadow:var(--shadow-md);max-width:300px;animation:toastin .18s ease;}
+.toast.violet{background:var(--violet);}
+@keyframes toastin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 
-/* BTNS */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--r2);
-  font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;font-family:var(--fD);
-  letter-spacing:.05em;text-transform:uppercase;border:none}
-.btn-primary{background:var(--amber);color:var(--bg0)}
-.btn-primary:hover{background:var(--amber2);transform:translateY(-1px)}
-.btn-teal{background:var(--teal);color:var(--bg0)}.btn-teal:hover{background:var(--teal2)}
-.btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--border)}
-.btn-ghost:hover{background:var(--bg3);color:var(--t1)}
-.btn-red{background:var(--redA);color:var(--red);border:1px solid rgba(255,58,92,.25)}
-.btn-red:hover{background:rgba(255,58,92,.25)}
-.btn-sm{padding:6px 12px;font-size:11px}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+/* float xp */
+.floatxp{position:fixed;font-family:var(--font-mono);font-weight:700;font-size:15px;z-index:200;pointer-events:none;animation:floatup 1s ease forwards;}
+.floatxp.gain{color:var(--violet);}
+.floatxp.pen{color:var(--ink);}
+@keyframes floatup{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-34px);}}
 
-/* TOAST */
-.toast-wrap{position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;
-  gap:8px;z-index:99997;pointer-events:none}
-.toast{display:flex;align-items:center;gap:11px;padding:13px 18px;
-  background:var(--bg3);border:1px solid var(--borderB);border-radius:var(--r3);
-  box-shadow:0 8px 32px rgba(0,0,0,.5);transform:translateX(120%);opacity:0;
-  transition:all .35s cubic-bezier(.34,1.56,.64,1);min-width:260px;pointer-events:auto}
-.toast.show{transform:translateX(0);opacity:1}
-.toast.t-xp{border-color:var(--teal)}.toast.t-ach{border-color:var(--amber)}.toast.t-lv{border-color:var(--violet)}
-.toast-ico{font-size:18px}.toast-body{flex:1}
-.toast-ttl{font-size:13px;font-weight:700;color:var(--t1);font-family:var(--fD)}
-.toast-sub{font-size:12px;color:var(--t2);font-weight:500}
-.toast-num{font-family:var(--fM);font-size:17px;font-weight:700;color:var(--teal)}
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(20,12,30,0.45);display:flex;align-items:center;justify-content:center;z-index:150;padding:20px;}
+.modal{background:var(--paper);border-radius:var(--radius);padding:24px;max-width:420px;width:100%;box-shadow:var(--shadow-md);}
+.modal h3{font-size:17px;margin-bottom:8px;}
+.modal p{font-size:13px;color:var(--ink-soft);line-height:1.5;margin:0 0 16px;}
+.modal .actions{display:flex;justify-content:flex-end;gap:8px;}
+.modal label.chk-line{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
 
-/* LEVEL UP */
-.lv-overlay{position:fixed;inset:0;z-index:99999;background:rgba(5,7,15,.92);
-  backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center}
-.lv-overlay.show{display:flex}
-.lv-card{background:var(--bg3);border:1px solid rgba(245,166,35,.45);border-radius:var(--r5);
-  padding:48px 56px;text-align:center;max-width:380px;width:90%;position:relative}
-.lv-card::before{content:'';position:absolute;inset:0;border-radius:inherit;
-  background:radial-gradient(circle at 50% 0%,rgba(245,166,35,.12) 0%,transparent 60%);pointer-events:none}
-.lv-label{font-family:var(--fD);font-size:11px;color:var(--amber);font-weight:700;
-  letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px}
-.lv-num{font-family:var(--fD);font-size:72px;font-weight:900;color:var(--amber);
-  letter-spacing:-4px;line-height:1;margin-bottom:8px;text-shadow:0 0 40px rgba(245,166,35,.5)}
-.lv-title{font-family:var(--fD);font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}
-.lv-desc{font-size:14px;color:var(--t2);margin-bottom:26px;font-weight:500}
+/* levelup */
+.levelup-overlay{position:fixed;inset:0;background:rgba(16,10,24,0.6);display:flex;align-items:center;justify-content:center;z-index:160;}
+.levelup-card{background:var(--paper);border-radius:18px;padding:40px 46px;text-align:center;box-shadow:var(--shadow-md);animation:popin .25s ease;}
+@keyframes popin{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.levelup-card .eyebrow{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);font-weight:700;}
+.levelup-card h2{font-size:30px;margin:8px 0 4px;}
+.levelup-card .sub{color:var(--ink-soft);font-size:13px;margin-bottom:20px;}
 
-/* EMPTY */
-.empty{text-align:center;padding:36px 20px;color:var(--t3);font-size:13px;font-weight:600}
-.empty i{font-size:28px;display:block;margin-bottom:10px;opacity:.35}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .sidebar{width:52px}.main{margin-left:52px}
-  .d5-grid{grid-template-columns:repeat(3,1fr)}
-  .dash-bottom{grid-template-columns:1fr}.sk-grid{grid-template-columns:1fr}
-  .dash-header{flex-direction:column}.xp-card{width:100%}}
-@media(max-width:600px){
-  .page{padding:14px 14px 70px}.hud{padding:0 14px}
-  .hud-chip{display:none}.d5-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:680px){
+  #app{flex-direction:column;}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;width:100%;flex-direction:row;height:62px;padding:0 6px;justify-content:space-between;border-right:none;border-top:1px solid var(--line);z-index:50;overflow-x:auto;}
+  .brand{display:none;}
+  .nav-spacer{display:none;}
+  .main{padding-bottom:62px;}
+  .view-root{padding:18px 16px;}
+  .topbar{padding:12px 16px;}
+  .tb-stats{gap:14px;}
+}
 </style>
 </head>
 <body>
-<canvas id="particle-canvas"></canvas>
-<div class="scanline"></div>
 <div id="app">
+  <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+    <div class="brand">K</div>
+    <button class="nav-btn" data-view="dashboard" aria-label="Dashboard"><span class="glyph">⌂</span><span class="lbl">Home</span></button>
+    <button class="nav-btn" data-view="quests" aria-label="Quest Board"><span class="glyph">◆</span><span class="lbl">Quests</span></button>
+    <button class="nav-btn" data-view="achievements" aria-label="Achievements"><span class="glyph">✦</span><span class="lbl">Wins</span></button>
+    <button class="nav-btn" data-view="rewards" aria-label="Rewards"><span class="glyph">◈</span><span class="lbl">Reward</span></button>
+    <button class="nav-btn" data-view="skilltree" aria-label="Skill Tree"><span class="glyph">⌬</span><span class="lbl">Skills</span></button>
+    <button class="nav-btn" data-view="focus" aria-label="Focus Timer"><span class="glyph">◷</span><span class="lbl">Focus</span></button>
+    <button class="nav-btn" data-view="log" aria-label="Log"><span class="glyph">≣</span><span class="lbl">Log</span></button>
+    <div class="nav-spacer"></div>
+    <button class="nav-btn" data-view="admin" aria-label="Admin"><span class="glyph">⚙</span><span class="lbl">Admin</span></button>
+  </nav>
 
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="logo-wrap"><span>K</span></div>
-  <div class="nav-btn active" onclick="nav('dashboard')" data-tip="Dashboard"><i class="fa-solid fa-crosshairs"></i></div>
-  <div class="nav-btn" onclick="nav('quests')" data-tip="Quest Board"><i class="fa-solid fa-scroll"></i></div>
-  <div class="nav-btn" onclick="nav('achievements')" data-tip="Achievements"><i class="fa-solid fa-trophy"></i></div>
-  <div class="nav-btn" onclick="nav('rewards')" data-tip="Rewards"><i class="fa-solid fa-gift"></i></div>
-  <div class="nav-btn" onclick="nav('skills')" data-tip="Skill Tree"><i class="fa-solid fa-sitemap"></i></div>
-  <div class="nav-btn" onclick="nav('timer')" data-tip="Focus Timer"><i class="fa-solid fa-stopwatch"></i></div>
-  <div class="nav-btn" onclick="nav('log')" data-tip="XP Log"><i class="fa-solid fa-clock-rotate-left"></i></div>
-  <div class="nav-spacer"></div>
-  <div class="nav-btn" onclick="nav('admin')" data-tip="Edit System"><i class="fa-solid fa-sliders"></i></div>
-</aside>
-
-<main class="main">
-<!-- HUD -->
-<div class="hud">
-  <div class="hud-title" id="hud-title">COMMAND CENTER</div>
-  <div class="hud-sp"></div>
-  <div class="hud-chip"><span class="hud-chip-label">XP</span><span class="hud-chip-val a" id="hud-xp">0</span></div>
-  <div class="hud-chip"><span class="hud-chip-label">LVL</span><span class="hud-chip-val v" id="hud-lv">1</span></div>
-  <div class="hud-chip"><span class="hud-chip-label">STREAK</span><span class="hud-chip-val t" id="hud-str">0d</span></div>
-  <div class="hud-date" id="hud-date"></div>
-  <div class="save-dot" id="save-dot"></div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="view active" id="view-dashboard">
-<div class="page">
-  <div class="dash-header">
-    <div class="player-card">
-      <div class="rank-badge" id="rank-badge">⚔ OPERATOR</div>
-      <div class="p-name" id="pname">KATANA COMMAND CENTER</div>
-      <div class="p-season" id="pseason">Season: B2B Expansion</div>
-      <div class="p-stats">
-        <div class="p-stat"><div class="v a" id="meta-xp">0</div><div class="l">XP Month</div></div>
-        <div class="p-stat"><div class="v" id="meta-lv">1</div><div class="l">Level</div></div>
-        <div class="p-stat"><div class="v t" id="meta-str">0</div><div class="l">Streak</div></div>
-        <div class="p-stat"><div class="v" id="meta-done">0</div><div class="l">Done</div></div>
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <div>
+          <div class="tb-name" id="tbName">Player</div>
+          <div class="tb-season" id="tbSeason">Season</div>
+        </div>
       </div>
-    </div>
-    <div class="xp-card">
-      <div class="xp-card-lbl">Monthly XP Progress</div>
-      <div class="xp-big" id="xp-big">0 <span id="xp-target">/ 1000</span></div>
-      <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar" style="width:0%"></div></div>
-      <div class="ms-row" id="ms-row"></div>
-    </div>
-  </div>
-
-  <div class="sec-lbl">Daily 5 — Check off what you completed today</div>
-  <div class="d5-grid" id="d5-grid"></div>
-
-  <div class="streak-sec">
-    <div class="sec-lbl">
-      Consistency tracker
-      <span class="flame-pill" id="flame">⚡ <span id="str-ct">0</span> DAY STREAK</span>
-    </div>
-    <div class="streak-row" id="streak-row"></div>
-  </div>
-
-  <div class="sec-lbl" style="margin-bottom:10px">Active boss challenge</div>
-  <div id="boss-zone"></div>
-
-  <div class="dash-bottom">
-    <div class="panel">
-      <div class="panel-hdr">
-        <div class="panel-ttl">Daily Quests</div>
-        <div class="badge b-a" id="dq-badge">0 left</div>
+      <div class="tb-stats">
+        <div class="ring-wrap">
+          <svg width="46" height="46" viewBox="0 0 46 46">
+            <circle cx="23" cy="23" r="19" fill="none" stroke="#e8e3ef" stroke-width="5"></circle>
+            <circle id="ringFill" cx="23" cy="23" r="19" fill="none" stroke="#6d28d9" stroke-width="5" stroke-linecap="round" transform="rotate(-90 23 23)"></circle>
+          </svg>
+          <div class="ring-text">
+            <div class="title" id="tbLevelTitle">Initiate</div>
+            <div class="sub" id="tbLevelSub">0 / 100</div>
+          </div>
+        </div>
+        <div class="tb-stat"><div class="v mono" id="tbStreak">0</div><div class="k">Streak</div></div>
+        <div class="tb-stat"><div class="v mono" id="tbXP">0</div><div class="k">Season XP</div></div>
       </div>
-      <div class="panel-body" id="dash-dq"></div>
-    </div>
-    <div class="panel">
-      <div class="panel-hdr">
-        <div class="panel-ttl">Weekly Challenges</div>
-        <div class="badge b-v" id="wq-badge">0 left</div>
-      </div>
-      <div class="panel-body" id="dash-wq"></div>
-    </div>
-  </div>
-</div>
-</div><!-- /dashboard -->
+    </header>
 
-<!-- QUESTS -->
-<div class="view" id="view-quests">
-<div class="page">
-  <div class="qtabs">
-    <div class="qtab active" onclick="qTab('daily',this)">Daily</div>
-    <div class="qtab" onclick="qTab('weekly',this)">Weekly</div>
-    <div class="qtab" onclick="qTab('side',this)">Side Quests</div>
-  </div>
-  <div class="qpanel active" id="qp-daily">
-    <div class="qs-title"><i class="fa-solid fa-sun"></i> Daily Quests — reset each morning</div>
-    <div id="all-dq"></div>
-  </div>
-  <div class="qpanel" id="qp-weekly">
-    <div class="qs-title"><i class="fa-solid fa-calendar-week"></i> Weekly Challenges — harder, higher reward</div>
-    <div id="all-wq"></div>
-  </div>
-  <div class="qpanel" id="qp-side">
-    <div class="qs-title"><i class="fa-solid fa-dragon"></i> Side Quests &amp; Boss Battles</div>
-    <div id="all-sq"></div>
-  </div>
-</div>
-</div>
+    <div class="view-root" id="viewRoot">
 
-<!-- ACHIEVEMENTS -->
-<div class="view" id="view-achievements">
-<div class="page">
-  <div class="ach-grid" id="ach-grid"></div>
-</div>
-</div>
+      <!-- DASHBOARD -->
+      <section class="view" id="view-dashboard">
+        <div class="grid grid-2" style="margin-bottom:18px;">
+          <div class="card">
+            <div class="section-title">This week</div>
+            <div class="row" id="weekDots" style="gap:8px;"></div>
+          </div>
+          <div class="card">
+            <div class="section-title">Season balance</div>
+            <div class="balance-bar" id="balanceBar"><div class="pos" style="width:100%"></div></div>
+            <div class="row between" style="margin-top:8px;font-size:11.5px;" class="mono">
+              <span class="muted mono" id="balGain">+0 earned</span>
+              <span class="muted mono" id="balPen">−0 penalty</span>
+            </div>
+          </div>
+        </div>
 
-<!-- REWARDS -->
-<div class="view" id="view-rewards">
-<div class="page">
-  <div class="sec-lbl" style="margin-bottom:24px">Milestone rewards — XP gates unlock these</div>
-  <div class="rw-timeline" id="rw-tl"></div>
-</div>
-</div>
+        <div class="section-title">Daily 5</div>
+        <div class="stack" id="daily5List" style="margin-bottom:22px;"></div>
 
-<!-- SKILLS -->
-<div class="view" id="view-skills">
-<div class="page">
-  <div class="sec-lbl" style="margin-bottom:16px">Domain mastery — XP per category unlocks nodes</div>
-  <div class="sk-grid" id="sk-grid"></div>
-</div>
-</div>
+        <div class="section-title">Boss battle</div>
+        <div id="bossWrap" style="margin-bottom:22px;"></div>
 
-<!-- TIMER -->
-<div class="view" id="view-timer">
-<div class="page">
-  <div class="sec-lbl">Focus Session Timer</div>
-  <div class="timer-card">
-    <div style="text-align:center;margin-bottom:8px">
-      <div style="font-family:var(--fD);font-size:10px;color:var(--t3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px">Current session</div>
-      <div style="font-family:var(--fD);font-size:12px;color:var(--t2);font-weight:700" id="timer-mode-label">POMODORO · 25 min</div>
-    </div>
-    <div class="timer-display" id="timer-display">25:00</div>
-    <div class="timer-btns" style="margin-bottom:14px">
-      <button class="t-preset active" data-mins="25" onclick="setTimer(25,this)">25 min</button>
-      <button class="t-preset" data-mins="50" onclick="setTimer(50,this)">50 min</button>
-      <button class="t-preset" data-mins="90" onclick="setTimer(90,this)">90 min</button>
-      <button class="t-preset" data-mins="5" onclick="setTimer(5,this)">5 min break</button>
-    </div>
-    <div class="timer-btns">
-      <button class="btn btn-primary" onclick="startTimer()"><i class="fa-solid fa-play"></i> Start</button>
-      <button class="btn btn-ghost" onclick="pauseTimer()"><i class="fa-solid fa-pause"></i> Pause</button>
-      <button class="btn btn-ghost" onclick="resetTimer()"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-    </div>
-    <div style="text-align:center;margin-top:18px;font-size:12px;color:var(--t3);font-family:var(--fD);letter-spacing:.05em">
-      Sessions today: <span id="session-count" style="color:var(--amber);font-weight:700">0</span> &nbsp;·&nbsp; 
-      Total focus time: <span id="total-focus" style="color:var(--teal);font-weight:700">0 min</span>
-    </div>
-  </div>
+        <div class="section-title">Log a slip</div>
+        <div class="card" style="margin-bottom:8px;">
+          <div class="row" id="quickPenRow" style="flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
+          <div class="row" style="gap:8px;">
+            <input type="text" id="customPenName" placeholder="Other slip…" style="flex:1;">
+            <input type="number" id="customPenXP" placeholder="XP" style="width:80px;" value="5">
+            <button class="btn sm" id="customPenBtn">Log</button>
+          </div>
+        </div>
+      </section>
 
-  <div class="sec-lbl">Session notes</div>
-  <div class="timer-card">
-    <textarea id="session-notes" placeholder="What are you working on this session? Write your intention here..." 
-      style="width:100%;height:100px;background:transparent;border:none;color:var(--t1);font-size:14px;font-family:var(--fB);resize:vertical;font-weight:500"
-      oninput="saveNotes()"></textarea>
-    <div style="font-size:11px;color:var(--t3);margin-top:6px;font-family:var(--fD);letter-spacing:.05em">Auto-saved</div>
-  </div>
-</div>
-</div>
+      <!-- QUESTS -->
+      <section class="view" id="view-quests">
+        <div class="tabs" id="questTabs">
+          <button class="tab-btn active" data-qtab="daily">Daily</button>
+          <button class="tab-btn" data-qtab="weekly">Weekly</button>
+          <button class="tab-btn" data-qtab="side">Side</button>
+        </div>
+        <div class="stack" id="questList"></div>
+      </section>
 
-<!-- LOG -->
-<div class="view" id="view-log">
-<div class="page">
-  <div class="sec-lbl" style="margin-bottom:14px">XP History</div>
-  <div id="xp-log"></div>
-</div>
-</div>
+      <!-- ACHIEVEMENTS -->
+      <section class="view" id="view-achievements">
+        <div class="section-title">Achievements</div>
+        <div class="grid grid-3" id="achList"></div>
+      </section>
 
-<!-- ADMIN -->
-<div class="view" id="view-admin">
-<div class="page">
-  <div class="admin-notice">
-    <i class="fa-solid fa-circle-info" style="color:var(--amber)"></i>
-    All fields edit live and save automatically. Click "Save All" to apply to dashboard.
-  </div>
+      <!-- REWARDS -->
+      <section class="view" id="view-rewards">
+        <div class="section-title">Reward timeline</div>
+        <div class="stack" id="rewardList"></div>
+      </section>
 
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-gear"></i> Global Settings</div>
-    <div class="settings-grid" id="settings-grid"></div>
-  </div>
+      <!-- SKILL TREE -->
+      <section class="view" id="view-skilltree">
+        <div class="section-title">Skill tree</div>
+        <div class="grid grid-2" id="skillTreeWrap"></div>
+      </section>
 
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-star"></i> Daily 5 Questions</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Emoji</th><th>Question</th><th>XP</th><th>Category</th><th></th></tr></thead>
-      <tbody id="d5-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addD5()"><i class="fa-solid fa-plus"></i> Add Question</button>
+      <!-- FOCUS -->
+      <section class="view" id="view-focus">
+        <div class="card" style="text-align:center;max-width:480px;margin:0 auto 18px;">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="muted" id="timerState" style="margin-bottom:16px;font-size:12.5px;">Ready</div>
+          <div class="preset-row" style="margin-bottom:14px;">
+            <button class="btn sm" data-preset="25">25 min</button>
+            <button class="btn sm" data-preset="50">50 min</button>
+            <button class="btn sm" data-preset="90">90 min</button>
+            <button class="btn sm" data-preset="5">5 min break</button>
+          </div>
+          <div class="row" style="justify-content:center;gap:8px;">
+            <button class="btn primary" id="timerStartBtn">Start</button>
+            <button class="btn" id="timerResetBtn">Reset</button>
+          </div>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="section-title">Today</div>
+            <div class="row between"><span class="muted">Sessions</span><span class="mono" id="focusSessionsToday">0</span></div>
+            <div class="row between"><span class="muted">Minutes</span><span class="mono" id="focusMinutesToday">0</span></div>
+          </div>
+          <div class="card">
+            <div class="section-title">Notes</div>
+            <textarea id="focusNotes" placeholder="What are you working on?"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section class="view" id="view-log">
+        <div class="tabs" id="logTabs">
+          <button class="tab-btn active" data-ltab="all">All</button>
+          <button class="tab-btn" data-ltab="gain">Earned</button>
+          <button class="tab-btn" data-ltab="pen">Penalties</button>
+        </div>
+        <div class="card" style="padding:6px 16px;" id="logCard"></div>
+      </section>
+
+      <!-- ADMIN -->
+      <section class="view" id="view-admin">
+        <div id="adminRoot"></div>
+      </section>
+
     </div>
   </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-sun"></i> Daily Quests</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Quest Name</th><th>XP</th><th>Category</th><th>Bonus Note</th><th></th></tr></thead>
-      <tbody id="dq-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addQ('daily')"><i class="fa-solid fa-plus"></i> Add Quest</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-calendar-week"></i> Weekly Quests</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Quest Name</th><th>XP</th><th>Category</th><th>Bonus Note</th><th></th></tr></thead>
-      <tbody id="wq-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addQ('weekly')"><i class="fa-solid fa-plus"></i> Add Quest</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-dragon"></i> Side Quests</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Quest Name</th><th>XP</th><th>Category</th><th>Bonus Note</th><th></th></tr></thead>
-      <tbody id="sq-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addQ('side')"><i class="fa-solid fa-plus"></i> Add Quest</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-trophy"></i> Achievements</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Icon</th><th>Name</th><th>Description</th><th>XP Reward</th><th>Goal</th><th></th></tr></thead>
-      <tbody id="ach-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addAch()"><i class="fa-solid fa-plus"></i> Add Achievement</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-gift"></i> Rewards</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Icon</th><th>Name</th><th>Description</th><th>XP Threshold</th><th></th></tr></thead>
-      <tbody id="rw-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addRw()"><i class="fa-solid fa-plus"></i> Add Reward</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title"><i class="fa-solid fa-shield-halved"></i> Level Titles</div>
-    <table class="admin-tbl">
-      <thead><tr><th>Level</th><th>Title</th><th>XP Threshold</th><th></th></tr></thead>
-      <tbody id="lv-tbody"></tbody>
-    </table>
-    <div class="btn-row">
-      <button class="btn btn-ghost btn-sm" onclick="addLvl()"><i class="fa-solid fa-plus"></i> Add Level</button>
-    </div>
-  </div>
-
-  <div class="admin-sec">
-    <div class="admin-sec-title" style="color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</div>
-    <div class="btn-row">
-      <button class="btn btn-red" onclick="resetProg()"><i class="fa-solid fa-rotate-left"></i> Reset Progress</button>
-      <button class="btn btn-red" onclick="newMonth()"><i class="fa-solid fa-calendar-plus"></i> Start New Month</button>
-      <button class="btn btn-red" onclick="resetAll()"><i class="fa-solid fa-trash"></i> Reset Everything</button>
-    </div>
-  </div>
-
-  <div class="btn-row">
-    <button class="btn btn-primary" onclick="saveAll()"><i class="fa-solid fa-floppy-disk"></i> Save All Changes</button>
-    <button class="btn btn-teal" onclick="exportCfg()"><i class="fa-solid fa-download"></i> Export JSON</button>
-    <button class="btn btn-ghost" onclick="importCfg()"><i class="fa-solid fa-upload"></i> Import JSON</button>
-  </div>
-  <input type="file" id="import-file" accept=".json" style="display:none" onchange="doImport(event)">
-</div>
 </div>
 
-</main>
-</div><!-- /app -->
-
-<div class="toast-wrap" id="toast-wrap"></div>
-<div class="lv-overlay" id="lv-overlay">
-  <div class="lv-card">
-    <div class="lv-label">⚡ Level Up ⚡</div>
-    <div class="lv-num" id="lv-num">2</div>
-    <div class="lv-title" id="lv-title">Rising Operator</div>
-    <div class="lv-desc" id="lv-desc">Keep building. The next level awaits.</div>
-    <button class="btn btn-primary" onclick="closeLv()">Continue <i class="fa-solid fa-arrow-right"></i></button>
-  </div>
-</div>
+<div id="toasts"></div>
+<div id="modalRoot"></div>
 
 <script>
-// ═══════════════════════════════════════════
-// DEFAULT CONFIG
-// ═══════════════════════════════════════════
-const DEF = {
-  settings:{
-    playerName:"Katana OS",
-    season:"B2B Expansion",
-    monthlyTarget:1000,
-    exceptionalTarget:1200,
-    milestones:[300,600,1000,1200]
-  },
-  levels:[
-    {lv:1,title:"Recruit",xp:0},
-    {lv:2,title:"Operator",xp:150},
-    {lv:3,title:"Enforcer",xp:350},
-    {lv:4,title:"Strategist",xp:550},
-    {lv:5,title:"Commander",xp:750},
-    {lv:6,title:"Warlord",xp:950},
-    {lv:7,title:"Legend",xp:1150}
-  ],
-  daily5:[
-    {id:"d5_a",icon:"🏋️",question:"Workout done?",xp:20,cat:"fit"},
-    {id:"d5_b",icon:"🥗",question:"Nutrition on track?",xp:15,cat:"nut"},
-    {id:"d5_c",icon:"💼",question:"Business moved forward?",xp:30,cat:"biz"},
-    {id:"d5_d",icon:"🎬",question:"Content created?",xp:25,cat:"content"},
-    {id:"d5_e",icon:"📘",question:"Learned something new?",xp:20,cat:"learn"}
-  ],
-  dailyQuests:[
-    {id:"dq1",name:"Send 5+ cold outreach messages",xp:30,cat:"biz",bonus:""},
-    {id:"dq2",name:"Publish one piece of content",xp:25,cat:"content",bonus:""},
-    {id:"dq3",name:"30 min TypeScript practice",xp:20,cat:"learn",bonus:""},
-    {id:"dq4",name:"Follow up with 3 existing leads",xp:20,cat:"biz",bonus:"+5 XP if deal discussed"},
-    {id:"dq5",name:"Hit protein target & avoid junk",xp:15,cat:"nut",bonus:""},
-    {id:"dq6",name:"Review daily analytics / metrics",xp:15,cat:"biz",bonus:""}
-  ],
-  weeklyQuests:[
-    {id:"wq1",name:"Book 3 B2B discovery calls",xp:60,cat:"biz",bonus:"+20 XP if 5+ calls booked"},
-    {id:"wq2",name:"Submit 1 proposal or pitch",xp:50,cat:"biz",bonus:""},
-    {id:"wq3",name:"Film + edit 1 video",xp:50,cat:"content",bonus:""},
-    {id:"wq4",name:"Write 2 content scripts",xp:35,cat:"content",bonus:""},
-    {id:"wq5",name:"Complete one TypeScript module",xp:40,cat:"learn",bonus:""},
-    {id:"wq6",name:"5-day perfect daily streak",xp:50,cat:"biz",bonus:"Streak bonus!"}
-  ],
-  sideQuests:[
-    {id:"sq1",name:"Close a B2B deal",xp:150,cat:"biz",bonus:"🔥 BOSS KILL — Epic reward!"},
-    {id:"sq2",name:"Generate 20+ leads this month",xp:80,cat:"biz",bonus:""},
-    {id:"sq3",name:"Publish full campaign (3+ pieces)",xp:75,cat:"content",bonus:""},
-    {id:"sq4",name:"Reach 1k views on a single post",xp:60,cat:"content",bonus:""},
-    {id:"sq5",name:"Build a working TypeScript project",xp:80,cat:"learn",bonus:""},
-    {id:"sq6",name:"14-day workout streak",xp:70,cat:"fit",bonus:""},
-    {id:"sq7",name:"Land a brand partnership",xp:100,cat:"biz",bonus:"Rare achievement!"}
-  ],
-  achievements:[
-    {id:"ach_deal",icon:"💰",name:"First Deal Closed",desc:"Close your first B2B sale",xpReward:100,field:"deals",goal:1},
-    {id:"ach_s7",icon:"⚡",name:"7-Day Streak",desc:"Complete all 5 daily checks 7 days running",xpReward:50,field:"streak_acc",goal:7},
-    {id:"ach_s30",icon:"👑",name:"Consistency King",desc:"30-day perfect daily streak",xpReward:150,field:"streak_acc",goal:30},
-    {id:"ach_cnt",icon:"🎬",name:"Content Machine",desc:"Publish 10 pieces of content",xpReward:60,field:"content_count",goal:10},
-    {id:"ach_lds",icon:"🎯",name:"Lead Hunter",desc:"Generate 20 B2B leads",xpReward:75,field:"leads",goal:20},
-    {id:"ach_lrn",icon:"📚",name:"Learning Master",desc:"Log 8 learning sessions",xpReward:60,field:"learn_sessions",goal:8},
-    {id:"ach_fit",icon:"🏆",name:"Fitness Champion",desc:"Complete 20 workouts",xpReward:70,field:"workouts",goal:20},
-    {id:"ach_600",icon:"🔥",name:"Locked In",desc:"Reach 600 XP in a month",xpReward:0,field:"_xp600",goal:600},
-    {id:"ach_1k",icon:"⭐",name:"Successful Month",desc:"Hit the 1000 XP monthly target",xpReward:0,field:"_xp1000",goal:1000}
-  ],
-  rewards:[
-    {id:"rw1",icon:"🎲",name:"Board Game Evening",desc:"Full evening for Dune Imperium or Viticulture — you earned it",threshold:300},
-    {id:"rw2",icon:"💻",name:"Workspace Upgrade",desc:"New tool, subscription, or gear of your choice",threshold:600},
-    {id:"rw3",icon:"📗",name:"Learning Investment",desc:"Course, book, or resource — TypeScript, sales, or marketing",threshold:1000},
-    {id:"rw4",icon:"⭐",name:"Exceptional Month Treat",desc:"Something personal and indulgent — you exceeded the hard target",threshold:1200}
-  ]
-};
+'use strict';
 
-const SK = 'katana_os_v4';
-let cfg = JSON.parse(JSON.stringify(DEF));
-let prog = freshProg();
+/* =========================== constants =========================== */
+var STORAGE_KEY='katana_os_v5';
+var CATS=[
+  {key:'Business',icon:'◆'},
+  {key:'Content',icon:'✎'},
+  {key:'Learning',icon:'◎'},
+  {key:'Fitness',icon:'▲'},
+  {key:'Nutrition',icon:'●'}
+];
 
-function freshProg(){
+function catIcon(c){ var f=CATS.find(function(x){return x.key===c;}); return f?f.icon:'◇'; }
+
+function defaultState(){
   return {
-    xp:0,level:1,
-    daily5Done:{},
-    questsDone:{},
-    streakDays:Array(7).fill(false),
-    currentStreak:0,
-    streakAcc:0,
-    achProgress:{},
-    achUnlocked:[],
-    xpLog:[],
-    catXP:{biz:0,content:0,learn:0,fit:0,nut:0},
-    sessionsToday:0,
-    totalFocusMin:0,
-    lastDate:null
+    version:5,
+    seq:0,
+    player:{name:'Player', season:'Season I'},
+    targets:{monthly:1000, exceptional:1200},
+    economy:{perfectDayBonus:10, focusXPPerMinute:0.4, bossBonusPct:0.2},
+    xp:0,
+    lifetimeXP:0,
+    categoryXP:{Business:0,Content:0,Learning:0,Fitness:0,Nutrition:0},
+    levels:[
+      {id:'lvl_1', title:'Initiate', threshold:0},
+      {id:'lvl_2', title:'Apprentice', threshold:150},
+      {id:'lvl_3', title:'Disciple', threshold:350},
+      {id:'lvl_4', title:'Ronin', threshold:600},
+      {id:'lvl_5', title:'Sword Saint', threshold:900},
+      {id:'lvl_6', title:'Shadow Master', threshold:1300},
+      {id:'lvl_7', title:'Katana Sage', threshold:1800}
+    ],
+    daily5:[
+      {id:'d_1', text:'Did you move your body today?', xp:10},
+      {id:'d_2', text:'Did you read or learn something?', xp:10},
+      {id:'d_3', text:'Did you eat at least one real meal?', xp:10},
+      {id:'d_4', text:'Did you do 30+ minutes of deep work?', xp:10},
+      {id:'d_5', text:'Did you plan tomorrow before bed?', xp:10}
+    ],
+    quests:{
+      daily:[
+        {id:'qd_1', name:'Morning routine', category:'Fitness', xp:15},
+        {id:'qd_2', name:'Inbox zero', category:'Business', xp:15},
+        {id:'qd_3', name:'Write 300 words', category:'Content', xp:20}
+      ],
+      weekly:[
+        {id:'qw_1', name:'Publish one piece of content', category:'Content', xp:60},
+        {id:'qw_2', name:'Review weekly numbers', category:'Business', xp:40},
+        {id:'qw_3', name:'Three workouts this week', category:'Fitness', xp:50}
+      ],
+      side:[
+        {id:'qs_1', name:'Ship the landing page redesign', category:'Business', xp:120},
+        {id:'qs_2', name:'Finish the online course module', category:'Learning', xp:90},
+        {id:'qs_3', name:'Run a 10k', category:'Fitness', xp:150}
+      ]
+    },
+    sideCompleted:[],
+    achievements:[
+      {id:'a_1', name:'First Blood', desc:'Complete your first quest', metric:'totalQuestsCompleted', target:1},
+      {id:'a_2', name:'Perfect Day', desc:'Complete all 5 daily check-ins in one day', metric:'perfectDays', target:1},
+      {id:'a_3', name:'Week One', desc:'Reach a 7-day streak', metric:'longestStreak', target:7},
+      {id:'a_4', name:'Iron Will', desc:'Reach a 30-day streak', metric:'longestStreak', target:30},
+      {id:'a_5', name:'1000 Club', desc:'Earn 1000 lifetime XP', metric:'lifetimeXP', target:1000},
+      {id:'a_6', name:'5000 Club', desc:'Earn 5000 lifetime XP', metric:'lifetimeXP', target:5000},
+      {id:'a_7', name:'Boss Slayer', desc:'Defeat 5 boss-tier side quests', metric:'bossesDefeated', target:5},
+      {id:'a_8', name:'Disciplined', desc:'Go 14 days without a single penalty', metric:'cleanStreak', target:14}
+    ],
+    unlockedAchievements:[],
+    rewards:[
+      {id:'r_1', name:'Custom wallpaper day', xpRequired:200},
+      {id:'r_2', name:'Guilt-free cheat meal', xpRequired:400},
+      {id:'r_3', name:'Half-day off, no guilt', xpRequired:700},
+      {id:'r_4', name:'New gear purchase', xpRequired:1200},
+      {id:'r_5', name:'Full rest-day weekend', xpRequired:2000}
+    ],
+    skillTree:{
+      Business:[{id:'sb_1',name:'First Client',xp:50},{id:'sb_2',name:'Systemized Workflow',xp:150},{id:'sb_3',name:'Consistent Revenue',xp:350},{id:'sb_4',name:'Scaled Operation',xp:700}],
+      Content:[{id:'sc_1',name:'First Post Published',xp:50},{id:'sc_2',name:'Found Your Voice',xp:150},{id:'sc_3',name:'Built An Audience',xp:350},{id:'sc_4',name:'Recognized Authority',xp:700}],
+      Learning:[{id:'sl_1',name:'Cracked The Basics',xp:50},{id:'sl_2',name:'Deliberate Practice',xp:150},{id:'sl_3',name:'Deep Competence',xp:350},{id:'sl_4',name:'Mastery Track',xp:700}],
+      Fitness:[{id:'sf_1',name:'Showed Up',xp:50},{id:'sf_2',name:'Built The Habit',xp:150},{id:'sf_3',name:'Visible Progress',xp:350},{id:'sf_4',name:'Peak Condition',xp:700}]
+    },
+    penalties:{
+      enabled:true,
+      missedDaily5XP:5,
+      missedDailyQuestXP:10,
+      missedWeeklyQuestXP:25,
+      streakBreakXP:20,
+      quick:[
+        {id:'p_1', name:'Doomscrolled past bedtime', xp:10},
+        {id:'p_2', name:'Skipped planned workout', xp:15},
+        {id:'p_3', name:'Broke a focus session early', xp:8}
+      ]
+    },
+    stats:{dailyQuestsCompleted:0, weeklyQuestsCompleted:0, sideQuestsCompleted:0, perfectDays:0, focusSessions:0, focusMinutesTotal:0, bossesDefeated:0, cleanStreakDays:0},
+    streak:{current:0, longest:0, weekDays:[false,false,false,false,false,false,false]},
+    today:{date:null, daily5Done:{}, dailyQuestDone:{}, perfectDayAwarded:false, xpGainedToday:0, penaltyToday:false},
+    week:{weekStart:null, weeklyQuestDone:{}},
+    focus:{notes:''},
+    xpLog:[]
   };
 }
 
-// ── PERSIST ─────────────────────────────────
-function persist(){
-  localStorage.setItem(SK,JSON.stringify({cfg,prog}));
-  const d=document.getElementById('save-dot');
-  d.classList.add('show');setTimeout(()=>d.classList.remove('show'),1600);
+/* =========================== utils =========================== */
+function $(sel,root){ return (root||document).querySelector(sel); }
+function $all(sel,root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+function dateStr(d){
+  var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
 }
-
-function loadData(){
-  try{
-    const raw=localStorage.getItem(SK);
-    if(raw){const d=JSON.parse(raw);if(d.cfg)cfg=d.cfg;if(d.prog)prog={...freshProg(),...d.prog};}
-  }catch(e){console.warn(e);}
-  checkDayReset();
-  // load timer notes
-  const n=document.getElementById('session-notes');
-  if(n) n.value=localStorage.getItem('katana_notes')||'';
-  // load timer sessions
-  const td=localStorage.getItem('katana_timer_date');
-  const today=new Date().toDateString();
-  if(td===today){
-    prog.sessionsToday=parseInt(localStorage.getItem('katana_sessions')||'0');
-    prog.totalFocusMin=parseInt(localStorage.getItem('katana_focus')||'0');
-  }
+function todayStr(){ return dateStr(new Date()); }
+function mondayOf(ds){
+  var d=new Date(ds+'T00:00:00');
+  var day=d.getDay();
+  var diff=(day===0?-6:1-day);
+  d.setDate(d.getDate()+diff);
+  return dateStr(d);
 }
-
-function checkDayReset(){
-  const today=new Date().toDateString();
-  if(prog.lastDate && prog.lastDate!==today){
-    const wasYest=new Date(today)-new Date(prog.lastDate)<172800000;
-    if(!wasYest){ prog.currentStreak=0; }
-    prog.daily5Done={};
-    prog.streakDays=[...prog.streakDays.slice(1),false];
-  }
-  prog.lastDate=today;
+function daysBetween(a,b){
+  var da=new Date(a+'T00:00:00'), db=new Date(b+'T00:00:00');
+  return Math.round((db-da)/86400000);
 }
-
-function saveNotes(){
-  localStorage.setItem('katana_notes',document.getElementById('session-notes').value);
+function uid(prefix){
+  state.seq=(state.seq||0)+1;
+  return prefix+'_'+state.seq+'_'+Date.now().toString(36).slice(-4);
 }
-
-// ── PARTICLES ───────────────────────────────
-const cvs=document.getElementById('particle-canvas');
-const pctx=cvs.getContext('2d');
-let particles=[];
-function resize(){cvs.width=innerWidth;cvs.height=innerHeight;}
-window.addEventListener('resize',resize);resize();
-
-function burst(x,y,col='#F5A623',n=20){
-  for(let i=0;i<n;i++){
-    const a=(Math.PI*2/n)*i+Math.random()*.6;
-    const sp=2+Math.random()*5;
-    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-2,r:3+Math.random()*4,life:1,decay:.016+Math.random()*.014,col});
-  }
-}
-function animP(){
-  pctx.clearRect(0,0,cvs.width,cvs.height);
-  particles=particles.filter(p=>p.life>0);
-  particles.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.life-=p.decay;
-    pctx.globalAlpha=Math.max(0,p.life);
-    pctx.fillStyle=p.col;pctx.beginPath();pctx.arc(p.x,p.y,p.r,0,Math.PI*2);pctx.fill();
+function clamp0(n){ return n<0?0:n; }
+function escapeHtml(s){
+  return String(s===undefined||s===null?'':s).replace(/[&<>"']/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
   });
-  pctx.globalAlpha=1;
-  requestAnimationFrame(animP);
 }
-animP();
-
-// ── CAT HELPERS ─────────────────────────────
-const CATS={
-  biz:{bar:'#F5A623',pill:'p-a',hex:'#F5A623',label:'Business'},
-  content:{bar:'#9B72FF',pill:'p-v',hex:'#9B72FF',label:'Content'},
-  learn:{bar:'#00D4A1',pill:'p-t',hex:'#00D4A1',label:'Learning'},
-  fit:{bar:'#FF3A5C',pill:'p-r',hex:'#FF3A5C',label:'Fitness'},
-  nut:{bar:'#4A9EFF',pill:'p-b',hex:'#4A9EFF',label:'Nutrition'}
-};
-function cc(cat){return CATS[cat]||CATS.biz;}
-
-// ── LEVELS ──────────────────────────────────
-function getLevel(xp){
-  let lv=cfg.levels[0];
-  for(const l of cfg.levels){ if(xp>=l.xp) lv=l; }
-  return lv;
+function deepMerge(base, override){
+  if (Array.isArray(base)){ return override!==undefined && Array.isArray(override) ? override : base; }
+  if (base && typeof base==='object'){
+    var out={};
+    for (var k in base){
+      out[k] = deepMerge(base[k], override ? override[k] : undefined);
+    }
+    return out;
+  }
+  return override!==undefined ? override : base;
 }
 
-// ── ADD XP ──────────────────────────────────
-function addXP(amount,desc,cat,x,y){
-  const oldLv=getLevel(prog.xp);
-  prog.xp+=amount;
-  if(cat) prog.catXP[cat]=(prog.catXP[cat]||0)+amount;
-  prog.xpLog.unshift({desc,xp:amount,cat:cat||'biz',time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),date:new Date().toLocaleDateString()});
-  if(prog.xpLog.length>60) prog.xpLog.pop();
-  const newLv=getLevel(prog.xp);
-  if(newLv.lv>oldLv.lv) triggerLvUp(newLv);
-  checkAch();
-  const px=x||innerWidth/2, py=y||innerHeight/2;
-  burst(px,py,cc(cat).hex);
-  toast(`+${amount} XP`,desc,'t-xp');
-  persist();
-  renderAll();
+/* =========================== state load/save =========================== */
+var state;
+function loadState(){
+  var fallback=defaultState();
+  try{
+    var raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return fallback;
+    var parsed=JSON.parse(raw);
+    return deepMerge(fallback, parsed);
+  }catch(e){
+    console.error('Failed to load saved state, starting fresh.', e);
+    return fallback;
+  }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    console.error('Failed to save state', e);
+    toast('Could not save — storage may be full.', 'pen');
+  }
 }
 
-// ── ACHIEVEMENTS ────────────────────────────
-function checkAch(){
-  cfg.achievements.forEach(a=>{
-    if(prog.achUnlocked.includes(a.id)) return;
-    let val=0;
-    if(a.field==='_xp600') val=prog.xp;
-    else if(a.field==='_xp1000') val=prog.xp;
-    else if(a.field==='streak_acc') val=prog.streakAcc||0;
-    else val=prog.achProgress[a.field]||0;
-    if(val>=a.goal){
-      prog.achUnlocked.push(a.id);
-      if(a.xpReward>0){
-        prog.xp+=a.xpReward;
-        prog.xpLog.unshift({desc:`Achievement: ${a.name}`,xp:a.xpReward,cat:'biz',time:'now',date:new Date().toLocaleDateString()});
+/* =========================== rollover / penalty engine =========================== */
+function ensureToday(){
+  var t=todayStr();
+  if(!state.today.date){
+    state.today.date=t;
+  }
+  if(!state.week.weekStart){
+    state.week.weekStart=mondayOf(t);
+  }
+}
+
+function runRollover(){
+  ensureToday();
+  var t=todayStr();
+  var wk=mondayOf(t);
+
+  if(state.today.date!==t){
+    closeOutDay();
+    state.today={date:t, daily5Done:{}, dailyQuestDone:{}, perfectDayAwarded:false, xpGainedToday:0, penaltyToday:false};
+  }
+  if(state.week.weekStart!==wk){
+    closeOutWeek();
+    state.week={weekStart:wk, weeklyQuestDone:{}};
+    state.streak.weekDays=[false,false,false,false,false,false,false];
+  }
+  checkAchievements();
+  saveState();
+}
+
+function closeOutDay(){
+  var pen=state.penalties;
+  if(pen.enabled){
+    state.daily5.forEach(function(q){
+      if(!state.today.daily5Done[q.id]){
+        applyPenalty(pen.missedDaily5XP, 'Missed: '+q.text, true);
       }
-      toast(`🏆 ${a.name}`,a.xpReward>0?`+${a.xpReward} XP bonus!`:'Achievement unlocked!','t-ach');
-      burst(innerWidth/2,innerHeight/3,'#F5A623',32);
+    });
+    state.quests.daily.forEach(function(q){
+      if(!state.today.dailyQuestDone[q.id]){
+        applyPenalty(pen.missedDailyQuestXP, 'Missed quest: '+q.name, true);
+      }
+    });
+  }
+  if(state.today.xpGainedToday>0){
+    state.streak.current+=1;
+    if(state.streak.current>state.streak.longest) state.streak.longest=state.streak.current;
+  } else {
+    if(state.streak.current>0 && pen.enabled){
+      applyPenalty(pen.streakBreakXP, 'Streak broken', true);
+    }
+    state.streak.current=0;
+  }
+  if(!state.today.penaltyToday){
+    state.stats.cleanStreakDays+=1;
+  } else {
+    state.stats.cleanStreakDays=0;
+  }
+}
+
+function closeOutWeek(){
+  var pen=state.penalties;
+  if(pen.enabled){
+    state.quests.weekly.forEach(function(q){
+      if(!state.week.weeklyQuestDone[q.id]){
+        applyPenalty(pen.missedWeeklyQuestXP, 'Missed weekly: '+q.name, true);
+      }
+    });
+  }
+}
+
+/* =========================== xp engine =========================== */
+function addXP(amount, reason, opts){
+  opts=opts||{};
+  amount=Math.round(amount);
+  if(amount<=0) return;
+  state.xp+=amount;
+  state.lifetimeXP+=amount;
+  state.today.xpGainedToday+=amount;
+  if(opts.category && state.categoryXP[opts.category]!==undefined){
+    state.categoryXP[opts.category]+=amount;
+  }
+  logEntry('gain', amount, reason);
+  if(!opts.silent){ toast('+'+amount+' XP — '+reason, 'violet'); spawnFloat('+'+amount,'gain'); }
+  checkLevelUp();
+  checkAchievements();
+}
+
+function removeXP(amount, opts){
+  opts=opts||{};
+  amount=Math.round(amount);
+  if(amount<=0) return;
+  state.xp=clamp0(state.xp-amount);
+  state.lifetimeXP=clamp0(state.lifetimeXP-amount);
+  state.today.xpGainedToday-=amount;
+  if(opts.category && state.categoryXP[opts.category]!==undefined){
+    state.categoryXP[opts.category]=clamp0(state.categoryXP[opts.category]-amount);
+  }
+}
+
+function applyPenalty(amount, reason, silent){
+  amount=Math.round(amount);
+  if(amount<=0) return;
+  state.xp=clamp0(state.xp-amount);
+  state.today.penaltyToday=true;
+  state.stats.cleanStreakDays=0;
+  logEntry('pen', amount, reason);
+  if(!silent){ toast('−'+amount+' XP — '+reason, 'pen'); spawnFloat('−'+amount,'pen'); }
+}
+
+function logEntry(type, amount, reason){
+  state.xpLog.unshift({type:type, amount:amount, reason:reason, date:todayStr(), ts:Date.now()});
+  if(state.xpLog.length>300){ state.xpLog.length=300; }
+}
+
+function levelInfo(){
+  var levels=state.levels.slice().sort(function(a,b){return a.threshold-b.threshold;});
+  var idx=0;
+  for(var i=0;i<levels.length;i++){
+    if(state.xp>=levels[i].threshold) idx=i; else break;
+  }
+  var current=levels[idx];
+  var next=levels[idx+1]||null;
+  var pct = next ? (state.xp-current.threshold)/(next.threshold-current.threshold) : 1;
+  return {title:current.title, next:next, pct:Math.max(0,Math.min(1,pct)), currentThreshold:current.threshold, idx:idx};
+}
+
+var lastLevelIdx=null;
+function checkLevelUp(){
+  var info=levelInfo();
+  if(lastLevelIdx===null){ lastLevelIdx=info.idx; return; }
+  if(info.idx>lastLevelIdx){
+    lastLevelIdx=info.idx;
+    showLevelUp(info.title);
+  } else {
+    lastLevelIdx=info.idx;
+  }
+}
+
+function metricValue(metric){
+  switch(metric){
+    case 'totalQuestsCompleted': return state.stats.dailyQuestsCompleted+state.stats.weeklyQuestsCompleted+state.stats.sideQuestsCompleted;
+    case 'perfectDays': return state.stats.perfectDays;
+    case 'longestStreak': return state.streak.longest;
+    case 'lifetimeXP': return state.lifetimeXP;
+    case 'bossesDefeated': return state.stats.bossesDefeated;
+    case 'cleanStreak': return state.stats.cleanStreakDays;
+    default: return 0;
+  }
+}
+
+function checkAchievements(){
+  state.achievements.forEach(function(a){
+    if(state.unlockedAchievements.indexOf(a.id)>=0) return;
+    if(metricValue(a.metric)>=a.target){
+      state.unlockedAchievements.push(a.id);
+      addXP(25, 'Achievement: '+a.name, {silent:true});
+      toast('Achievement unlocked — '+a.name, 'violet');
     }
   });
 }
 
-function incP(field,n=1){
-  prog.achProgress[field]=(prog.achProgress[field]||0)+n;
-}
-
-// ── DAILY 5 ─────────────────────────────────
-function toggleD5(id,xp,cat,el){
-  const was=prog.daily5Done[id];
-  if(was){ prog.daily5Done[id]=false; prog.xp=Math.max(0,prog.xp-xp); prog.catXP[cat]=Math.max(0,(prog.catXP[cat]||0)-xp); persist();renderAll();return; }
-  prog.daily5Done[id]=true;
-  const r=el.getBoundingClientRect();
-  const d5=cfg.daily5.find(d=>d.id===id);
-  // track per-cat
-  if(cat==='fit') incP('workouts');
-  if(cat==='content') incP('content_count');
-  if(cat==='learn') incP('learn_sessions');
-  addXP(xp,d5?d5.question:'Daily check',cat,r.left+r.width/2,r.top+r.height/2);
-  checkPerfectDay();
-}
-
-function checkPerfectDay(){
-  const all=cfg.daily5.every(d=>prog.daily5Done[d.id]);
-  if(!all) return;
-  prog.currentStreak++;
-  prog.streakAcc=(prog.streakAcc||0)+1;
-  prog.streakDays=[...prog.streakDays.slice(1),true];
-  addXP(10,'Perfect Day Bonus! 🔥','biz');
-  toast('🔥 Perfect Day!',`+10 bonus XP · ${prog.currentStreak} day streak!`,'t-ach');
-}
-
-// ── QUEST TOGGLE ────────────────────────────
-// Store quest data in a map so we don't rely on DOM attributes for names
-const QUEST_MAP={};
-function buildQuestMap(){
-  [...cfg.dailyQuests,...cfg.weeklyQuests,...cfg.sideQuests].forEach(q=>{QUEST_MAP[q.id]=q;});
-}
-
-function toggleQ(id,el){
-  if(prog.questsDone[id]) return;
-  const q=QUEST_MAP[id];
+/* =========================== quest actions =========================== */
+function toggleDaily5(id){
+  var q=state.daily5.find(function(x){return x.id===id;});
   if(!q) return;
-  prog.questsDone[id]=true;
-  if(q.cat==='biz' && q.name.toLowerCase().includes('deal')) incP('deals');
-  if(q.name.toLowerCase().includes('lead')) incP('leads',3);
-  if(q.cat==='content') incP('content_count');
-  if(q.cat==='learn') incP('learn_sessions');
-  const r=el.getBoundingClientRect();
-  addXP(q.xp,q.name,q.cat,r.left+r.width/2,r.top);
+  var done=!!state.today.daily5Done[id];
+  if(!done){
+    state.today.daily5Done[id]=true;
+    addXP(q.xp, q.text, {silent:false});
+  } else {
+    delete state.today.daily5Done[id];
+    removeXP(q.xp, {});
+  }
+  var allDone=state.daily5.every(function(x){return !!state.today.daily5Done[x.id];});
+  if(allDone && !state.today.perfectDayAwarded){
+    state.today.perfectDayAwarded=true;
+    state.stats.perfectDays+=1;
+    addXP(state.economy.perfectDayBonus, 'Perfect Day bonus', {silent:false});
+  } else if(!allDone && state.today.perfectDayAwarded){
+    state.today.perfectDayAwarded=false;
+    state.stats.perfectDays=clamp0(state.stats.perfectDays-1);
+    removeXP(state.economy.perfectDayBonus, {});
+  }
+  saveState(); renderAll();
 }
 
-// ── STREAK TOGGLE ───────────────────────────
-function toggleStreak(i){
-  prog.streakDays[i]=!prog.streakDays[i];
-  persist();renderAll();
+function toggleDailyQuest(id){
+  var q=state.quests.daily.find(function(x){return x.id===id;});
+  if(!q) return;
+  var done=!!state.today.dailyQuestDone[id];
+  if(!done){
+    state.today.dailyQuestDone[id]=true;
+    state.stats.dailyQuestsCompleted+=1;
+    addXP(q.xp, q.name, {category:q.category});
+  } else {
+    delete state.today.dailyQuestDone[id];
+    state.stats.dailyQuestsCompleted=clamp0(state.stats.dailyQuestsCompleted-1);
+    removeXP(q.xp, {category:q.category});
+  }
+  saveState(); renderAll();
 }
 
-// ── TIMER ───────────────────────────────────
-let timerMins=25, timerSecs=0, timerRunning=false, timerInterval=null;
-function setTimer(mins,el){
-  if(timerRunning) return;
-  timerMins=mins; timerSecs=0;
-  document.querySelectorAll('.t-preset').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  const lbl=mins===5?'BREAK · 5 min':mins===25?'POMODORO · 25 min':mins===50?'DEEP WORK · 50 min':'FLOW STATE · 90 min';
-  document.getElementById('timer-mode-label').textContent=lbl;
-  updateTimerDisplay();
+function toggleWeeklyQuest(id){
+  var q=state.quests.weekly.find(function(x){return x.id===id;});
+  if(!q) return;
+  var done=!!state.week.weeklyQuestDone[id];
+  if(!done){
+    state.week.weeklyQuestDone[id]=true;
+    state.stats.weeklyQuestsCompleted+=1;
+    addXP(q.xp, q.name, {category:q.category});
+  } else {
+    delete state.week.weeklyQuestDone[id];
+    state.stats.weeklyQuestsCompleted=clamp0(state.stats.weeklyQuestsCompleted-1);
+    removeXP(q.xp, {category:q.category});
+  }
+  saveState(); renderAll();
 }
-function startTimer(){
-  if(timerRunning) return;
-  timerRunning=true;
-  document.getElementById('timer-display').classList.add('running');
-  timerInterval=setInterval(()=>{
-    if(timerSecs===0){
-      if(timerMins===0){ clearInterval(timerInterval);timerRunning=false;
-        document.getElementById('timer-display').classList.remove('running');
-        prog.sessionsToday++;prog.totalFocusMin+=parseInt(document.querySelector('.t-preset.active')?.dataset.mins||25);
-        localStorage.setItem('katana_timer_date',new Date().toDateString());
-        localStorage.setItem('katana_sessions',prog.sessionsToday);
-        localStorage.setItem('katana_focus',prog.totalFocusMin);
-        renderAll();
-        burst(innerWidth/2,innerHeight/2,'#00D4A1',24);
-        toast('⏱ Session Complete!','Great focus work. Take a break.','t-ach');
-        return;
+
+function getBoss(){
+  var active=state.quests.side.filter(function(q){ return state.sideCompleted.indexOf(q.id)<0; });
+  if(!active.length) return null;
+  return active.slice().sort(function(a,b){return b.xp-a.xp;})[0];
+}
+
+function completeSideQuest(id){
+  var q=state.quests.side.find(function(x){return x.id===id;});
+  if(!q) return;
+  if(state.sideCompleted.indexOf(id)>=0) return;
+  var boss=getBoss();
+  var isBoss = boss && boss.id===id;
+  showConfirm({
+    title: isBoss ? 'Defeat boss quest?' : 'Complete side quest?',
+    message: q.name+' — awards '+(isBoss?Math.round(q.xp*(1+state.economy.bossBonusPct)):q.xp)+' XP. This cannot be undone.',
+    confirmLabel: isBoss ? 'Defeat' : 'Complete',
+    onConfirm:function(){
+      state.sideCompleted.push(id);
+      state.stats.sideQuestsCompleted+=1;
+      var amount=q.xp;
+      if(isBoss){
+        amount=Math.round(q.xp*(1+state.economy.bossBonusPct));
+        state.stats.bossesDefeated+=1;
       }
-      timerMins--;timerSecs=59;
-    } else { timerSecs--; }
-    updateTimerDisplay();
-  },1000);
-}
-function pauseTimer(){
-  clearInterval(timerInterval);timerRunning=false;
-  document.getElementById('timer-display').classList.remove('running');
-}
-function resetTimer(){
-  pauseTimer();
-  const active=document.querySelector('.t-preset.active');
-  timerMins=parseInt(active?.dataset.mins||25);timerSecs=0;
-  updateTimerDisplay();
-}
-function updateTimerDisplay(){
-  document.getElementById('timer-display').textContent=`${String(timerMins).padStart(2,'0')}:${String(timerSecs).padStart(2,'0')}`;
-  document.getElementById('session-count').textContent=prog.sessionsToday||0;
-  document.getElementById('total-focus').textContent=(prog.totalFocusMin||0)+' min';
+      addXP(amount, (isBoss?'Boss defeated: ':'')+q.name, {category:q.category});
+      saveState(); renderAll();
+    }
+  });
 }
 
-// ── TOAST ───────────────────────────────────
-function toast(title,sub,type){
-  const wrap=document.getElementById('toast-wrap');
-  const t=document.createElement('div');
-  t.className=`toast ${type}`;
-  const ico={['t-xp']:'⚡',['t-ach']:'🏆',['t-lv']:'⬆'}[type]||'⚡';
-  t.innerHTML=`<div class="toast-ico">${ico}</div><div class="toast-body"><div class="toast-ttl">${title}</div><div class="toast-sub">${sub}</div></div>`;
-  if(type==='t-xp') t.innerHTML+=`<div class="toast-num">${title}</div>`;
-  wrap.appendChild(t);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400);},2800);
+/* =========================== rendering =========================== */
+var currentView='dashboard';
+var currentQuestTab='daily';
+var currentLogTab='all';
+
+function switchView(v){
+  currentView=v;
+  $all('.nav-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.view===v); });
+  $all('.view').forEach(function(sec){ sec.classList.toggle('active', sec.id==='view-'+v); });
 }
 
-// ── LEVEL UP ────────────────────────────────
-function triggerLvUp(lv){
-  document.getElementById('lv-num').textContent=lv.lv;
-  document.getElementById('lv-title').textContent=lv.title;
-  document.getElementById('lv-desc').textContent=`You've crossed into ${lv.title} territory. Keep the pressure on.`;
-  document.getElementById('lv-overlay').classList.add('show');
-  burst(innerWidth/2,innerHeight/2,'#9B72FF',40);
-}
-function closeLv(){document.getElementById('lv-overlay').classList.remove('show');}
-
-// ── RENDER ALL ──────────────────────────────
-function renderAll(){
-  renderHUD();
-  renderDash();
-  renderQuests();
-  renderAch();
-  renderRewards();
-  renderSkills();
-  renderLog();
-  updateTimerDisplay();
+function toast(msg, kind){
+  var el=document.createElement('div');
+  el.className='toast'+(kind==='violet'?' violet':'');
+  el.textContent=msg;
+  $('#toasts').appendChild(el);
+  setTimeout(function(){ el.remove(); }, 3200);
 }
 
-function renderHUD(){
-  const lv=getLevel(prog.xp);
-  document.getElementById('hud-xp').textContent=prog.xp;
-  document.getElementById('hud-lv').textContent=lv.lv;
-  document.getElementById('hud-str').textContent=prog.currentStreak+'d';
-  document.getElementById('hud-date').textContent=new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+function spawnFloat(text, kind){
+  var anchor=$('#tbXP');
+  if(!anchor) return;
+  var rect=anchor.getBoundingClientRect();
+  var el=document.createElement('div');
+  el.className='floatxp '+kind;
+  el.textContent=text;
+  el.style.left=(rect.left)+'px';
+  el.style.top=(rect.top-6)+'px';
+  document.body.appendChild(el);
+  el.addEventListener('animationend', function(){ el.remove(); });
 }
 
-function renderDash(){
-  const xp=prog.xp;
-  const lv=getLevel(xp);
-  const exc=cfg.settings.exceptionalTarget||1200;
-  document.getElementById('rank-badge').textContent='⚔ '+lv.title.toUpperCase();
-  document.getElementById('pname').textContent=cfg.settings.playerName||'Katana OS';
-  document.getElementById('pseason').textContent='Season: '+(cfg.settings.season||'');
-  document.getElementById('meta-xp').textContent=xp;
-  document.getElementById('meta-lv').textContent=lv.lv;
-  document.getElementById('meta-str').textContent=prog.currentStreak;
-  document.getElementById('meta-done').textContent=
-    Object.values(prog.questsDone).filter(Boolean).length+Object.values(prog.daily5Done).filter(Boolean).length;
-  document.getElementById('xp-big').innerHTML=xp+' <span>/ '+exc+'</span>';
-  document.getElementById('xp-bar').style.width=Math.min(100,Math.round(xp/exc*100))+'%';
-  const ms=cfg.settings.milestones||[300,600,1000,1200];
-  document.getElementById('ms-row').innerHTML=ms.map(m=>{
-    let cls='ms';
-    if(xp>=m) cls+=(m>=exc?' exc':' hit');
-    return`<span class="${cls}">${m}</span>`;
-  }).join('');
-
-  // D5
-  document.getElementById('d5-grid').innerHTML=cfg.daily5.map(d=>{
-    const done=!!prog.daily5Done[d.id];
-    return`<div class="d5${done?' done':''}" onclick="toggleD5('${d.id}',${d.xp},'${d.cat}',this)">
-      <div class="d5-ck">${done?'✓':''}</div>
-      <div class="d5-ico">${d.icon}</div>
-      <div class="d5-q">${d.question}</div>
-      <div class="d5-xp">+${d.xp} XP</div>
-    </div>`;
-  }).join('');
-
-  // Streak
-  const days=['MON','TUE','WED','THU','FRI','SAT','SUN'];
-  const todayI=(new Date().getDay()+6)%7;
-  document.getElementById('streak-row').innerHTML=days.map((d,i)=>{
-    const hit=prog.streakDays[i];const isT=i===todayI;
-    return`<div class="streak-cell${hit?' hit':''}${isT?' today':''}" onclick="toggleStreak(${i})">
-      <div class="sc-day">${d}</div><div class="sc-ico"></div>
-    </div>`;
-  }).join('');
-  document.getElementById('str-ct').textContent=prog.currentStreak;
-
-  // Boss zone
-  const bossQ=cfg.sideQuests.find(q=>q.xp>=100);
-  const bossEl=document.getElementById('boss-zone');
-  if(bossQ){
-    const done=!!prog.questsDone[bossQ.id];
-    bossEl.innerHTML=`<div class="boss-card${done?' boss-done':''}">
-      <div class="boss-title">⚔ ACTIVE BOSS BATTLE</div>
-      <div class="boss-name">${bossQ.name}</div>
-      <div class="boss-desc">${bossQ.bonus||'Complete this epic challenge for maximum XP'}</div>
-      <div class="boss-row">
-        <div class="boss-xp">+${bossQ.xp} XP</div>
-        <button class="boss-btn" onclick="${done?'void 0':`toggleQ('${bossQ.id}',this)`}" ${done?'disabled':''}>
-          ${done?'✓ DEFEATED':'⚔ ENGAGE'}
-        </button>
-      </div>
-    </div>`;
-  } else { bossEl.innerHTML=''; }
-
-  // Dash quest lists
-  const dqLeft=cfg.dailyQuests.filter(q=>!prog.questsDone[q.id]);
-  document.getElementById('dq-badge').textContent=dqLeft.length+' left';
-  document.getElementById('dash-dq').innerHTML=dqLeft.slice(0,4).map(q=>qiHTML(q)).join('')||
-    '<div class="empty"><i class="fa-solid fa-check-double"></i>All daily quests done!</div>';
-  const wqLeft=cfg.weeklyQuests.filter(q=>!prog.questsDone[q.id]);
-  document.getElementById('wq-badge').textContent=wqLeft.length+' left';
-  document.getElementById('dash-wq').innerHTML=wqLeft.slice(0,4).map(q=>qiHTML(q)).join('')||
-    '<div class="empty"><i class="fa-solid fa-check-double"></i>All weekly quests done!</div>';
+function showLevelUp(title){
+  var overlay=document.createElement('div');
+  overlay.className='levelup-overlay';
+  overlay.innerHTML='<div class="levelup-card"><div class="eyebrow">Level Up</div><h2>'+escapeHtml(title)+'</h2><div class="sub">New season rank reached</div><button class="btn primary" id="levelUpClose">Continue</button></div>';
+  document.body.appendChild(overlay);
+  overlay.querySelector('#levelUpClose').addEventListener('click', function(){ overlay.remove(); });
 }
 
-function qiHTML(q){
-  const done=!!prog.questsDone[q.id];
-  const c=cc(q.cat);
-  return`<div class="qi${done?' done':''}${q.xp>=100?' epic':''}" onclick="toggleQ('${q.id}',this)">
-    <div class="qi-bar" style="background:${c.bar}"></div>
-    <div class="qi-body">
-      <div class="qi-name">${q.name}</div>
-      ${q.bonus?`<div class="qi-sub">★ ${q.bonus}</div>`:''}
-    </div>
-    <div class="qi-r">
-      <span class="xp-pill ${c.pill}">+${q.xp}</span>
-      ${q.bonus?'<span class="bonus-pill">BONUS</span>':''}
-      <div class="qi-ck">${done?'✓':''}</div>
-    </div>
-  </div>`;
+function showConfirm(opts){
+  var root=$('#modalRoot');
+  var requireCheck=!!opts.requireCheck;
+  var html='<div class="overlay"><div class="modal">'+
+    '<h3>'+escapeHtml(opts.title)+'</h3>'+
+    '<p>'+escapeHtml(opts.message)+'</p>'+
+    (requireCheck ? '<label class="chk-line"><input type="checkbox" id="confirmChk"> I understand this cannot be undone.</label>' : '')+
+    '<div class="actions"><button class="btn" id="confirmCancel">Cancel</button>'+
+    '<button class="btn '+(opts.danger?'danger':'primary')+'" id="confirmOk" '+(requireCheck?'disabled':'')+'>'+escapeHtml(opts.confirmLabel||'Confirm')+'</button></div>'+
+    '</div></div>';
+  root.innerHTML=html;
+  var overlay=root.querySelector('.overlay');
+  function close(){ root.innerHTML=''; }
+  overlay.querySelector('#confirmCancel').addEventListener('click', close);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) close(); });
+  var okBtn=overlay.querySelector('#confirmOk');
+  if(requireCheck){
+    overlay.querySelector('#confirmChk').addEventListener('change', function(e){
+      okBtn.disabled=!e.target.checked;
+    });
+  }
+  okBtn.addEventListener('click', function(){
+    close();
+    opts.onConfirm && opts.onConfirm();
+  });
+}
+
+function renderTopbar(){
+  $('#tbName').textContent=state.player.name;
+  $('#tbSeason').textContent=state.player.season;
+  $('#tbStreak').textContent=state.streak.current;
+  $('#tbXP').textContent=state.xp;
+  var info=levelInfo();
+  $('#tbLevelTitle').textContent=info.title;
+  $('#tbLevelSub').textContent= info.next ? (state.xp+' / '+info.next.threshold) : 'Max rank';
+  var ring=$('#ringFill');
+  var circumference=2*Math.PI*19;
+  ring.setAttribute('stroke-dasharray', circumference);
+  ring.setAttribute('stroke-dashoffset', circumference*(1-info.pct));
+}
+
+function renderDashboard(){
+  var dots=$('#weekDots');
+  dots.innerHTML='';
+  ['M','T','W','T','F','S','S'].forEach(function(d,i){
+    var on=state.streak.weekDays[i];
+    var b=document.createElement('button');
+    b.className='pill'+(on?' tint':'');
+    b.style.width='34px'; b.style.justifyContent='center'; b.style.padding='8px 0';
+    b.textContent=d;
+    b.addEventListener('click', function(){
+      state.streak.weekDays[i]=!state.streak.weekDays[i];
+      saveState(); renderDashboard();
+    });
+    dots.appendChild(b);
+  });
+
+  var totalLogged = state.xpLog.reduce(function(s,e){ return s + (e.type==='gain'?e.amount:0); },0);
+  var totalPen = state.xpLog.reduce(function(s,e){ return s + (e.type==='pen'?e.amount:0); },0);
+  var gainPct = (totalLogged+totalPen)>0 ? totalLogged/(totalLogged+totalPen)*100 : 100;
+  $('#balanceBar').innerHTML='<div class="pos" style="width:'+gainPct+'%"></div><div class="neg" style="width:'+(100-gainPct)+'%"></div>';
+  $('#balGain').textContent='+'+totalLogged+' earned';
+  $('#balPen').textContent='−'+totalPen+' penalty';
+
+  var list=$('#daily5List');
+  list.innerHTML='';
+  if(!state.daily5.length){ list.innerHTML='<div class="empty">No daily check-ins yet — add some in Admin.</div>'; }
+  state.daily5.forEach(function(q){
+    var done=!!state.today.daily5Done[q.id];
+    var row=document.createElement('div');
+    row.className='qrow'+(done?' done':'');
+    row.innerHTML='<div class="chk">'+(done?'✓':'')+'</div><div class="name">'+escapeHtml(q.text)+'</div><div class="xp">+'+q.xp+'</div>';
+    row.addEventListener('click', function(){ toggleDaily5(q.id); });
+    list.appendChild(row);
+  });
+
+  var bossWrap=$('#bossWrap');
+  var boss=getBoss();
+  if(!boss){
+    bossWrap.innerHTML='<div class="empty">No active side quests. Add one in Admin to summon a boss.</div>';
+  } else {
+    var bonusXP=Math.round(boss.xp*(1+state.economy.bossBonusPct));
+    bossWrap.innerHTML='<div class="boss-card">'+
+      '<div class="label">'+escapeHtml(boss.category)+' · Boss tier</div>'+
+      '<h3>'+escapeHtml(boss.name)+'</h3>'+
+      '<div class="muted" style="font-size:12.5px;">Defeating this awards '+bonusXP+' XP ('+boss.xp+' + boss bonus)</div>'+
+      '<div class="boss-bar"><div class="fill" style="width:100%"></div></div>'+
+      '<button class="btn violet" id="defeatBossBtn">Defeat boss</button>'+
+      '</div>';
+    $('#defeatBossBtn').addEventListener('click', function(){ completeSideQuest(boss.id); });
+  }
+
+  var qpRow=$('#quickPenRow');
+  qpRow.innerHTML='';
+  if(!state.penalties.quick.length){
+    qpRow.innerHTML='<span class="faint" style="font-size:12px;">No quick penalties configured — add some in Admin.</span>';
+  }
+  state.penalties.quick.forEach(function(p){
+    var b=document.createElement('button');
+    b.className='pill';
+    b.innerHTML=escapeHtml(p.name)+' <span class="mono" style="color:var(--ink-soft)">−'+p.xp+'</span>';
+    b.addEventListener('click', function(){
+      applyPenalty(p.xp, p.name);
+      saveState(); renderAll();
+    });
+    qpRow.appendChild(b);
+  });
 }
 
 function renderQuests(){
-  document.getElementById('all-dq').innerHTML=cfg.dailyQuests.map(qiHTML).join('')||'<div class="empty">No daily quests</div>';
-  document.getElementById('all-wq').innerHTML=cfg.weeklyQuests.map(qiHTML).join('')||'<div class="empty">No weekly quests</div>';
-  document.getElementById('all-sq').innerHTML=cfg.sideQuests.map(qiHTML).join('')||'<div class="empty">No side quests</div>';
+  $all('#questTabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.qtab===currentQuestTab); });
+  var list=$('#questList');
+  list.innerHTML='';
+  if(currentQuestTab==='daily'){
+    if(!state.quests.daily.length){ list.innerHTML='<div class="empty">No daily quests yet.</div>'; return; }
+    state.quests.daily.forEach(function(q){
+      var done=!!state.today.dailyQuestDone[q.id];
+      var row=buildQuestRow(q, done, function(){ toggleDailyQuest(q.id); });
+      list.appendChild(row);
+    });
+  } else if(currentQuestTab==='weekly'){
+    if(!state.quests.weekly.length){ list.innerHTML='<div class="empty">No weekly quests yet.</div>'; return; }
+    state.quests.weekly.forEach(function(q){
+      var done=!!state.week.weeklyQuestDone[q.id];
+      var row=buildQuestRow(q, done, function(){ toggleWeeklyQuest(q.id); });
+      list.appendChild(row);
+    });
+  } else {
+    var active=state.quests.side.filter(function(q){ return state.sideCompleted.indexOf(q.id)<0; });
+    var done=state.quests.side.filter(function(q){ return state.sideCompleted.indexOf(q.id)>=0; });
+    if(!active.length && !done.length){ list.innerHTML='<div class="empty">No side quests yet.</div>'; return; }
+    active.forEach(function(q){
+      var row=buildQuestRow(q, false, function(){ completeSideQuest(q.id); });
+      list.appendChild(row);
+    });
+    done.forEach(function(q){
+      var row=buildQuestRow(q, true, function(){});
+      list.appendChild(row);
+    });
+  }
 }
 
-function renderAch(){
-  document.getElementById('ach-grid').innerHTML=cfg.achievements.map(a=>{
-    let val=0;
-    if(a.field==='_xp600'||a.field==='_xp1000') val=prog.xp;
-    else if(a.field==='streak_acc') val=prog.streakAcc||0;
-    else val=prog.achProgress[a.field]||0;
-    const unlocked=prog.achUnlocked.includes(a.id);
-    const pct=Math.min(100,Math.round(val/a.goal*100));
-    const col=unlocked?'#F5A623':'#00D4A1';
-    return`<div class="ach${unlocked?' unlocked':' locked'}">
-      ${unlocked?'<div class="ach-stamp">✓</div>':''}
-      <div class="ach-top">
-        <div class="ach-ico ${unlocked?'u':'l'}">${a.icon}</div>
-        ${a.xpReward>0?`<span class="ach-xp xp-pill ${unlocked?'p-a':'p-t'}">+${a.xpReward} XP</span>`:'<span class="ach-xp xp-pill p-v">Badge</span>'}
-      </div>
-      <div class="ach-name">${a.name}</div>
-      <div class="ach-desc">${a.desc}</div>
-      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div class="prog-lbl">${unlocked?'✓ Unlocked':`${val} / ${a.goal} · ${pct}%`}</div>
-    </div>`;
-  }).join('');
+function buildQuestRow(q, done, onToggle){
+  var row=document.createElement('div');
+  row.className='qrow'+(done?' done':'');
+  row.innerHTML='<div class="chk">'+(done?'✓':'')+'</div>'+
+    '<div class="name">'+escapeHtml(q.name)+'</div>'+
+    '<div class="tag">'+catIcon(q.category)+' '+escapeHtml(q.category)+'</div>'+
+    '<div class="xp">+'+q.xp+'</div>';
+  if(!done){ row.addEventListener('click', onToggle); }
+  return row;
+}
+
+function renderAchievements(){
+  var wrap=$('#achList');
+  wrap.innerHTML='';
+  state.achievements.forEach(function(a){
+    var unlocked=state.unlockedAchievements.indexOf(a.id)>=0;
+    var val=metricValue(a.metric);
+    var pct=Math.min(100, Math.round((val/a.target)*100));
+    var card=document.createElement('div');
+    card.className='ach-card'+(unlocked?' unlocked':'');
+    card.innerHTML='<div class="name">'+escapeHtml(a.name)+'</div>'+
+      '<div class="desc">'+escapeHtml(a.desc)+'</div>'+
+      '<div class="progress"><div class="fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="muted mono" style="font-size:11px;margin-top:6px;">'+Math.min(val,a.target)+' / '+a.target+'</div>';
+    wrap.appendChild(card);
+  });
 }
 
 function renderRewards(){
-  const xp=prog.xp;
-  const sorted=[...cfg.rewards].sort((a,b)=>a.threshold-b.threshold);
-  let nextDone=false;
-  document.getElementById('rw-tl').innerHTML=sorted.map(r=>{
-    const un=xp>=r.threshold;
-    const isNext=!un&&!nextDone;
-    if(isNext) nextDone=true;
-    const cls=un?'unlocked':isNext?'next':'locked';
-    return`<div class="rw-item ${cls}">
-      <div class="rw-node">${r.icon}</div>
-      <div class="rw-body">
-        <div class="rw-thresh">${un?'✓ UNLOCKED':isNext?`${r.threshold-xp} XP TO GO`:`${r.threshold} XP`}</div>
-        <div class="rw-name">${r.name}</div>
-        <div class="rw-desc">${r.desc}</div>
-        ${isNext?`<div class="rw-status">Next reward · ${Math.round(xp/r.threshold*100)}% there</div>`:''}
-        ${un?'<div class="rw-status">✓ Claim this reward!</div>':''}
-      </div>
-    </div>`;
-  }).join('');
+  var wrap=$('#rewardList');
+  wrap.innerHTML='';
+  state.rewards.slice().sort(function(a,b){return a.xpRequired-b.xpRequired;}).forEach(function(r){
+    var unlocked=state.lifetimeXP>=r.xpRequired;
+    var card=document.createElement('div');
+    card.className='reward-card row between';
+    card.innerHTML='<div><div style="font-weight:600;font-size:13.5px;">'+escapeHtml(r.name)+'</div>'+
+      '<div class="muted mono" style="font-size:11px;">'+r.xpRequired+' lifetime XP</div></div>'+
+      '<div class="pill'+(unlocked?' tint':'')+'">'+(unlocked?'Unlocked':'Locked')+'</div>';
+    wrap.appendChild(card);
+  });
 }
 
-function renderSkills(){
-  const defs=[
-    {key:'biz',label:'BUSINESS',icon:'fa-briefcase',col:'#F5A623',max:450,nodes:['Cold outreach','B2B calls','Proposal writing','Lead generation','Revenue ops']},
-    {key:'content',label:'CONTENT',icon:'fa-film',col:'#9B72FF',max:320,nodes:['Script writing','Video production','Publishing','Campaign planning','Distribution']},
-    {key:'learn',label:'LEARNING',icon:'fa-graduation-cap',col:'#00D4A1',max:260,nodes:['TypeScript basics','Sales frameworks','Marketing systems','Business tooling','Advanced patterns']},
-    {key:'fit',label:'BODY RECOMP',icon:'fa-dumbbell',col:'#FF3A5C',max:200,nodes:['Workout consistency','Protein tracking','Nutrition plan','Body recomposition','Visible abs']}
-  ];
-  document.getElementById('sk-grid').innerHTML=defs.map(sk=>{
-    const earned=prog.catXP[sk.key]||0;
-    const pct=Math.min(100,Math.round(earned/sk.max*100));
-    const unCnt=Math.max(1,Math.floor(pct/100*sk.nodes.length));
-    const lvl=Math.max(1,Math.ceil(pct/100*5));
-    return`<div class="sk-card">
-      <div class="sk-hdr">
-        <div class="sk-title" style="color:${sk.col}"><i class="fa-solid ${sk.icon}" style="margin-right:6px;font-size:12px"></i>${sk.label}</div>
-        <span class="sk-xp" style="background:${sk.col}22;color:${sk.col};border:1px solid ${sk.col}44">${earned} XP</span>
-      </div>
-      <div class="sk-lv">Level ${lvl} · ${pct}% mastery</div>
-      <div class="sk-bar"><div class="sk-fill" style="width:${pct}%;background:${sk.col}"></div></div>
-      <div class="sk-nodes">${sk.nodes.map((n,i)=>{
-        const on=i<unCnt;
-        return`<div class="sk-node${on?' on':''}">
-          <div class="sk-ni">${on?'✓':'○'}</div>
-          <div style="flex:1;font-size:12px">${n}</div>
-          <div class="sk-ns">${on?'UNLOCKED':'LOCKED'}</div>
-        </div>`;
-      }).join('')}</div>
-    </div>`;
-  }).join('');
+function renderSkillTree(){
+  var wrap=$('#skillTreeWrap');
+  wrap.innerHTML='';
+  Object.keys(state.skillTree).forEach(function(domain){
+    var nodes=state.skillTree[domain];
+    var earned=state.categoryXP[domain]||0;
+    var box=document.createElement('div');
+    box.className='skill-domain';
+    var html='<div class="row between" style="margin-bottom:10px;"><h4>'+catIcon(domain)+' '+escapeHtml(domain)+'</h4><span class="mono muted" style="font-size:12px;">'+earned+' XP</span></div>';
+    nodes.slice().sort(function(a,b){return a.xp-b.xp;}).forEach(function(n){
+      var on=earned>=n.xp;
+      html+='<div class="skill-node'+(on?' on':'')+'"><div class="node-dot'+(on?' on':'')+'"></div><div class="nname">'+escapeHtml(n.name)+'</div><div class="nxp">'+n.xp+'</div></div>';
+    });
+    box.innerHTML=html;
+    wrap.appendChild(box);
+  });
 }
 
 function renderLog(){
-  const el=document.getElementById('xp-log');
-  if(!prog.xpLog.length){el.innerHTML='<div class="empty"><i class="fa-solid fa-clock-rotate-left"></i>No XP yet. Complete quests to see history.</div>';return;}
-  el.innerHTML='<div class="log-list">'+prog.xpLog.map(e=>`
-    <div class="log-entry">
-      <div class="log-dot" style="background:${cc(e.cat).hex}"></div>
-      <div class="log-desc">${e.desc}</div>
-      <div class="log-cat">${cc(e.cat).label.toUpperCase()}</div>
-      <div class="log-time">${e.date} ${e.time}</div>
-      <div class="log-xp">+${e.xp}</div>
-    </div>`).join('')+'</div>';
+  $all('#logTabs .tab-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.ltab===currentLogTab); });
+  var card=$('#logCard');
+  var entries=state.xpLog.filter(function(e){
+    if(currentLogTab==='all') return true;
+    return e.type===currentLogTab;
+  });
+  if(!entries.length){ card.innerHTML='<div class="empty">Nothing logged yet.</div>'; return; }
+  card.innerHTML=entries.slice(0,150).map(function(e){
+    return '<div class="log-row"><div><div>'+escapeHtml(e.reason)+'</div><div class="meta">'+e.date+'</div></div>'+
+      '<div class="amt '+(e.type==='gain'?'gain':'pen')+'">'+(e.type==='gain'?'+':'−')+e.amount+'</div></div>';
+  }).join('');
 }
 
-// ═══════════════════════════════════════════
-// ADMIN — Fixed: use onchange/onblur NOT oninput to avoid re-render mid-type
-// Store index in data attr, read value on change
-// ═══════════════════════════════════════════
+/* =========================== focus timer =========================== */
+var timer={seconds:25*60, total:25*60, running:false, intervalId:null, mode:'25'};
+function renderFocusStats(){
+  $('#focusSessionsToday').textContent=state.stats.focusSessions;
+  $('#focusMinutesToday').textContent=state.stats.focusMinutesTotal;
+  $('#focusNotes').value=state.focus.notes||'';
+}
+function formatTime(s){
+  var m=Math.floor(s/60), sec=s%60;
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function renderTimer(){
+  $('#timerDisplay').textContent=formatTime(timer.seconds);
+  $('#timerState').textContent= timer.running ? 'Focusing…' : (timer.seconds===timer.total ? 'Ready' : 'Paused');
+  $('#timerStartBtn').textContent= timer.running ? 'Pause' : 'Start';
+}
+function setPreset(mins){
+  if(timer.intervalId){ clearInterval(timer.intervalId); timer.intervalId=null; }
+  timer.running=false;
+  timer.mode=String(mins);
+  timer.total=mins*60;
+  timer.seconds=mins*60;
+  renderTimer();
+}
+function startPauseTimer(){
+  if(timer.running){
+    clearInterval(timer.intervalId); timer.intervalId=null; timer.running=false; renderTimer(); return;
+  }
+  timer.running=true;
+  renderTimer();
+  timer.intervalId=setInterval(function(){
+    timer.seconds-=1;
+    if(timer.seconds<=0){
+      clearInterval(timer.intervalId); timer.intervalId=null; timer.running=false;
+      onTimerComplete();
+      return;
+    }
+    renderTimer();
+  },1000);
+}
+function resetTimer(){
+  if(timer.intervalId){ clearInterval(timer.intervalId); timer.intervalId=null; }
+  timer.running=false;
+  timer.seconds=timer.total;
+  renderTimer();
+}
+function onTimerComplete(){
+  var mins=Math.round(timer.total/60);
+  if(timer.mode!=='5'){
+    state.stats.focusSessions+=1;
+    state.stats.focusMinutesTotal+=mins;
+    addXP(Math.round(mins*state.economy.focusXPPerMinute), 'Focus session ('+mins+'m)', {});
+    saveState();
+  } else {
+    toast('Break complete', 'violet');
+  }
+  timer.seconds=timer.total;
+  renderTimer(); renderFocusStats(); checkAchievements();
+}
+
+/* =========================== admin =========================== */
+function adminListEditor(opts){
+  var rows=opts.items.map(function(item, idx){
+    return opts.rowTemplate(item, idx);
+  }).join('');
+  return '<div class="section-title">'+opts.title+'</div>'+
+    (opts.items.length ? rows : '<div class="empty">'+ (opts.emptyText||'Nothing here yet.') +'</div>')+
+    '<button class="btn sm ghost" data-add="'+opts.addKey+'">+ Add '+opts.singular+'</button>';
+}
+
+function categoryOptions(selected){
+  return CATS.map(function(c){ return '<option value="'+c.key+'"'+(c.key===selected?' selected':'')+'>'+c.key+'</option>'; }).join('');
+}
+
 function renderAdmin(){
-  renderSettingsAdmin();
-  renderD5Admin();
-  renderQAdmin('daily');
-  renderQAdmin('weekly');
-  renderQAdmin('side');
-  renderAchAdmin();
-  renderRwAdmin();
-  renderLvAdmin();
+  var root=$('#adminRoot');
+  var html='';
+
+  html+='<div class="admin-section"><div class="section-title">Player & season</div><div class="grid grid-2">'+
+    '<label class="field">Name<input type="text" id="adm_name" value="'+escapeHtml(state.player.name)+'"></label>'+
+    '<label class="field">Season<input type="text" id="adm_season" value="'+escapeHtml(state.player.season)+'"></label>'+
+    '</div></div>';
+
+  html+='<div class="admin-section"><div class="section-title">Targets & economy</div><div class="grid grid-3">'+
+    '<label class="field">Monthly target<input type="number" id="adm_target_monthly" value="'+state.targets.monthly+'"></label>'+
+    '<label class="field">Exceptional target<input type="number" id="adm_target_exceptional" value="'+state.targets.exceptional+'"></label>'+
+    '<label class="field">Perfect day bonus<input type="number" id="adm_perfect_bonus" value="'+state.economy.perfectDayBonus+'"></label>'+
+    '<label class="field">Focus XP / minute<input type="number" step="0.1" id="adm_focus_xp" value="'+state.economy.focusXPPerMinute+'"></label>'+
+    '<label class="field">Boss bonus %<input type="number" step="1" id="adm_boss_bonus" value="'+Math.round(state.economy.bossBonusPct*100)+'"></label>'+
+    '</div></div>';
+
+  html+='<div class="admin-section">'+adminListEditor({
+    title:'Level titles', addKey:'level', singular:'level',
+    items:state.levels.slice().sort(function(a,b){return a.threshold-b.threshold;}),
+    rowTemplate:function(lv){
+      return '<div class="edit-row lvl"><input type="text" data-lvl-title="'+lv.id+'" value="'+escapeHtml(lv.title)+'">'+
+        '<input type="number" data-lvl-threshold="'+lv.id+'" value="'+lv.threshold+'">'+
+        '<button class="icon-btn" data-del-level="'+lv.id+'">✕</button></div>';
+    }
+  })+'</div>';
+
+  html+='<div class="admin-section">'+adminListEditor({
+    title:'Daily 5 questions', addKey:'daily5', singular:'question',
+    items:state.daily5,
+    rowTemplate:function(q){
+      return '<div class="edit-row q"><input type="text" data-d5-text="'+q.id+'" value="'+escapeHtml(q.text)+'">'+
+        '<span></span><input type="number" data-d5-xp="'+q.id+'" value="'+q.xp+'">'+
+        '<button class="icon-btn" data-del-d5="'+q.id+'">✕</button></div>';
+    }
+  })+'</div>';
+
+  ['daily','weekly','side'].forEach(function(type){
+    html+='<div class="admin-section">'+adminListEditor({
+      title:type.charAt(0).toUpperCase()+type.slice(1)+' quests', addKey:'quest_'+type, singular:'quest',
+      items:state.quests[type],
+      rowTemplate:function(q){
+        return '<div class="edit-row q"><input type="text" data-q-name="'+type+'|'+q.id+'" value="'+escapeHtml(q.name)+'">'+
+          '<select data-q-cat="'+type+'|'+q.id+'">'+categoryOptions(q.category)+'</select>'+
+          '<input type="number" data-q-xp="'+type+'|'+q.id+'" value="'+q.xp+'">'+
+          '<button class="icon-btn" data-del-quest="'+type+'|'+q.id+'">✕</button></div>';
+      }
+    })+'</div>';
+  });
+
+  html+='<div class="admin-section">'+adminListEditor({
+    title:'Achievements', addKey:'achievement', singular:'achievement',
+    items:state.achievements,
+    rowTemplate:function(a){
+      var metrics=['totalQuestsCompleted','perfectDays','longestStreak','lifetimeXP','bossesDefeated','cleanStreak'];
+      return '<div class="edit-row ach"><input type="text" data-a-name="'+a.id+'" value="'+escapeHtml(a.name)+'">'+
+        '<input type="text" data-a-desc="'+a.id+'" value="'+escapeHtml(a.desc)+'">'+
+        '<select data-a-metric="'+a.id+'">'+metrics.map(function(m){return '<option value="'+m+'"'+(m===a.metric?' selected':'')+'>'+m+'</option>';}).join('')+'</select>'+
+        '<input type="number" data-a-target="'+a.id+'" value="'+a.target+'">'+
+        '<button class="icon-btn" data-del-ach="'+a.id+'">✕</button></div>';
+    }
+  })+'</div>';
+
+  html+='<div class="admin-section">'+adminListEditor({
+    title:'Rewards', addKey:'reward', singular:'reward',
+    items:state.rewards,
+    rowTemplate:function(r){
+      return '<div class="edit-row rw"><input type="text" data-r-name="'+r.id+'" value="'+escapeHtml(r.name)+'">'+
+        '<input type="number" data-r-xp="'+r.id+'" value="'+r.xpRequired+'">'+
+        '<button class="icon-btn" data-del-reward="'+r.id+'">✕</button></div>';
+    }
+  })+'</div>';
+
+  html+='<div class="admin-section"><div class="section-title">Skill tree</div>';
+  Object.keys(state.skillTree).forEach(function(domain){
+    html+='<div style="margin-bottom:16px;"><div style="font-weight:600;font-size:13px;margin-bottom:6px;">'+catIcon(domain)+' '+domain+'</div>'+
+      adminListEditor({
+        title:'', addKey:'node_'+domain, singular:'node',
+        items:state.skillTree[domain],
+        rowTemplate:function(n){
+          return '<div class="edit-row node"><input type="text" data-n-name="'+domain+'|'+n.id+'" value="'+escapeHtml(n.name)+'">'+
+            '<input type="number" data-n-xp="'+domain+'|'+n.id+'" value="'+n.xp+'">'+
+            '<button class="icon-btn" data-del-node="'+domain+'|'+n.id+'">✕</button></div>';
+        }
+      })+'</div>';
+  });
+  html+='</div>';
+
+  html+='<div class="admin-section"><div class="section-title">Penalty settings</div>'+
+    '<label class="row" style="margin-bottom:14px;gap:8px;"><input type="checkbox" id="adm_pen_enabled" '+(state.penalties.enabled?'checked':'')+'> Enable automatic penalties</label>'+
+    '<div class="grid grid-2" style="margin-bottom:16px;">'+
+    '<label class="field">Missed daily-5 question<input type="number" id="adm_pen_d5" value="'+state.penalties.missedDaily5XP+'"></label>'+
+    '<label class="field">Missed daily quest<input type="number" id="adm_pen_dq" value="'+state.penalties.missedDailyQuestXP+'"></label>'+
+    '<label class="field">Missed weekly quest<input type="number" id="adm_pen_wq" value="'+state.penalties.missedWeeklyQuestXP+'"></label>'+
+    '<label class="field">Streak broken<input type="number" id="adm_pen_streak" value="'+state.penalties.streakBreakXP+'"></label>'+
+    '</div>'+
+    adminListEditor({
+      title:'Quick penalty buttons', addKey:'quickpen', singular:'penalty',
+      items:state.penalties.quick,
+      rowTemplate:function(p){
+        return '<div class="edit-row rw"><input type="text" data-qp-name="'+p.id+'" value="'+escapeHtml(p.name)+'">'+
+          '<input type="number" data-qp-xp="'+p.id+'" value="'+p.xp+'">'+
+          '<button class="icon-btn" data-del-qp="'+p.id+'">✕</button></div>';
+      }
+    })+
+    '</div>';
+
+  html+='<div class="admin-section"><div class="section-title">Backup</div><div class="row">'+
+    '<button class="btn" id="adm_export">Export JSON</button>'+
+    '<button class="btn" id="adm_import_btn">Import JSON</button>'+
+    '<input type="file" id="adm_import_file" accept="application/json" class="hidden">'+
+    '</div></div>';
+
+  html+='<div class="admin-section"><div class="section-title">Danger zone</div><div class="danger-box">'+
+    '<div class="danger-row"><div><strong>Reset progress</strong><div class="txt">Wipes all earned XP, streaks, stats and achievement unlocks. Keeps your configured quests, levels and settings.</div></div><button class="btn danger sm" id="adm_reset_progress">Reset progress</button></div>'+
+    '<div class="danger-row"><div><strong>Start new month</strong><div class="txt">Resets season XP and clears today/this-week checkmarks. Lifetime stats, skill tree and achievements are kept.</div></div><button class="btn danger sm" id="adm_new_month">Start new month</button></div>'+
+    '<div class="danger-row"><div><strong>Reset everything</strong><div class="txt">Factory reset — wipes all progress and your custom quests/config back to defaults.</div></div><button class="btn danger sm" id="adm_reset_all">Reset everything</button></div>'+
+    '</div></div>';
+
+  root.innerHTML=html;
+  bindAdminEvents();
 }
 
-function renderSettingsAdmin(){
-  const s=cfg.settings;
-  document.getElementById('settings-grid').innerHTML=`
-    <div class="setting-card"><label>Player / System Name</label>
-      <input type="text" value="${esc(s.playerName)}" onchange="cfg.settings.playerName=this.value">
-      <div class="setting-hint">Title on dashboard</div></div>
-    <div class="setting-card"><label>Current Season</label>
-      <input type="text" value="${esc(s.season)}" onchange="cfg.settings.season=this.value">
-      <div class="setting-hint">Shown below name</div></div>
-    <div class="setting-card"><label>Monthly XP Target</label>
-      <input type="number" value="${s.monthlyTarget}" onchange="cfg.settings.monthlyTarget=+this.value">
-      <div class="setting-hint">Successful month</div></div>
-    <div class="setting-card"><label>Exceptional XP Target</label>
-      <input type="number" value="${s.exceptionalTarget}" onchange="cfg.settings.exceptionalTarget=+this.value">
-      <div class="setting-hint">Outstanding month</div></div>
-    <div class="setting-card"><label>Milestones (comma-sep)</label>
-      <input type="text" value="${(s.milestones||[]).join(',')}" onchange="cfg.settings.milestones=this.value.split(',').map(Number).filter(Boolean)">
-      <div class="setting-hint">XP markers on bar</div></div>`;
+function bindAdminEvents(){
+  var root=$('#adminRoot');
+
+  function on(sel, evt, fn){ $all(sel, root).forEach(function(el){ el.addEventListener(evt, fn); }); }
+
+  on('#adm_name','change',function(e){ state.player.name=e.target.value; saveState(); renderTopbar(); });
+  on('#adm_season','change',function(e){ state.player.season=e.target.value; saveState(); renderTopbar(); });
+  on('#adm_target_monthly','change',function(e){ state.targets.monthly=Number(e.target.value)||0; saveState(); });
+  on('#adm_target_exceptional','change',function(e){ state.targets.exceptional=Number(e.target.value)||0; saveState(); });
+  on('#adm_perfect_bonus','change',function(e){ state.economy.perfectDayBonus=Number(e.target.value)||0; saveState(); });
+  on('#adm_focus_xp','change',function(e){ state.economy.focusXPPerMinute=Number(e.target.value)||0; saveState(); });
+  on('#adm_boss_bonus','change',function(e){ state.economy.bossBonusPct=(Number(e.target.value)||0)/100; saveState(); });
+  on('#adm_pen_enabled','change',function(e){ state.penalties.enabled=e.target.checked; saveState(); });
+  on('#adm_pen_d5','change',function(e){ state.penalties.missedDaily5XP=Number(e.target.value)||0; saveState(); });
+  on('#adm_pen_dq','change',function(e){ state.penalties.missedDailyQuestXP=Number(e.target.value)||0; saveState(); });
+  on('#adm_pen_wq','change',function(e){ state.penalties.missedWeeklyQuestXP=Number(e.target.value)||0; saveState(); });
+  on('#adm_pen_streak','change',function(e){ state.penalties.streakBreakXP=Number(e.target.value)||0; saveState(); });
+
+  on('[data-lvl-title]','change',function(e){
+    var id=e.target.getAttribute('data-lvl-title');
+    var lv=state.levels.find(function(l){return l.id===id;});
+    if(lv){ lv.title=e.target.value; saveState(); renderTopbar(); renderAdmin(); }
+  });
+  on('[data-lvl-threshold]','change',function(e){
+    var id=e.target.getAttribute('data-lvl-threshold');
+    var lv=state.levels.find(function(l){return l.id===id;});
+    if(lv){ lv.threshold=Number(e.target.value)||0; saveState(); renderTopbar(); renderAdmin(); }
+  });
+  on('[data-del-level]','click',function(e){
+    var id=e.target.getAttribute('data-del-level');
+    if(state.levels.length<=1){ toast('Keep at least one level.', 'pen'); return; }
+    state.levels=state.levels.filter(function(l){return l.id!==id;});
+    saveState(); renderAdmin(); renderTopbar();
+  });
+
+  on('[data-d5-text]','change',function(e){
+    var id=e.target.getAttribute('data-d5-text');
+    var q=state.daily5.find(function(x){return x.id===id;});
+    if(q){ q.text=e.target.value; saveState(); }
+  });
+  on('[data-d5-xp]','change',function(e){
+    var id=e.target.getAttribute('data-d5-xp');
+    var q=state.daily5.find(function(x){return x.id===id;});
+    if(q){ q.xp=Number(e.target.value)||0; saveState(); }
+  });
+  on('[data-del-d5]','click',function(e){
+    var id=e.target.getAttribute('data-del-d5');
+    state.daily5=state.daily5.filter(function(x){return x.id!==id;});
+    delete state.today.daily5Done[id];
+    saveState(); renderAdmin(); renderDashboard();
+  });
+
+  ['daily','weekly','side'].forEach(function(type){
+    on('[data-q-name]','change',function(e){
+      var parts=e.target.getAttribute('data-q-name').split('|');
+      if(parts[0]!==type) return;
+      var q=state.quests[type].find(function(x){return x.id===parts[1];});
+      if(q){ q.name=e.target.value; saveState(); }
+    });
+    on('[data-q-cat]','change',function(e){
+      var parts=e.target.getAttribute('data-q-cat').split('|');
+      if(parts[0]!==type) return;
+      var q=state.quests[type].find(function(x){return x.id===parts[1];});
+      if(q){ q.category=e.target.value; saveState(); }
+    });
+    on('[data-q-xp]','change',function(e){
+      var parts=e.target.getAttribute('data-q-xp').split('|');
+      if(parts[0]!==type) return;
+      var q=state.quests[type].find(function(x){return x.id===parts[1];});
+      if(q){ q.xp=Number(e.target.value)||0; saveState(); }
+    });
+  });
+  on('[data-del-quest]','click',function(e){
+    var parts=e.target.getAttribute('data-del-quest').split('|');
+    var type=parts[0], id=parts[1];
+    state.quests[type]=state.quests[type].filter(function(x){return x.id!==id;});
+    if(type==='daily') delete state.today.dailyQuestDone[id];
+    if(type==='weekly') delete state.week.weeklyQuestDone[id];
+    if(type==='side') state.sideCompleted=state.sideCompleted.filter(function(x){return x!==id;});
+    saveState(); renderAdmin(); renderQuests(); renderDashboard();
+  });
+
+  on('[data-a-name]','change',function(e){
+    var id=e.target.getAttribute('data-a-name');
+    var a=state.achievements.find(function(x){return x.id===id;});
+    if(a){ a.name=e.target.value; saveState(); }
+  });
+  on('[data-a-desc]','change',function(e){
+    var id=e.target.getAttribute('data-a-desc');
+    var a=state.achievements.find(function(x){return x.id===id;});
+    if(a){ a.desc=e.target.value; saveState(); }
+  });
+  on('[data-a-metric]','change',function(e){
+    var id=e.target.getAttribute('data-a-metric');
+    var a=state.achievements.find(function(x){return x.id===id;});
+    if(a){ a.metric=e.target.value; saveState(); }
+  });
+  on('[data-a-target]','change',function(e){
+    var id=e.target.getAttribute('data-a-target');
+    var a=state.achievements.find(function(x){return x.id===id;});
+    if(a){ a.target=Number(e.target.value)||1; saveState(); }
+  });
+  on('[data-del-ach]','click',function(e){
+    var id=e.target.getAttribute('data-del-ach');
+    state.achievements=state.achievements.filter(function(x){return x.id!==id;});
+    state.unlockedAchievements=state.unlockedAchievements.filter(function(x){return x!==id;});
+    saveState(); renderAdmin(); renderAchievements();
+  });
+
+  on('[data-r-name]','change',function(e){
+    var id=e.target.getAttribute('data-r-name');
+    var r=state.rewards.find(function(x){return x.id===id;});
+    if(r){ r.name=e.target.value; saveState(); }
+  });
+  on('[data-r-xp]','change',function(e){
+    var id=e.target.getAttribute('data-r-xp');
+    var r=state.rewards.find(function(x){return x.id===id;});
+    if(r){ r.xpRequired=Number(e.target.value)||0; saveState(); }
+  });
+  on('[data-del-reward]','click',function(e){
+    var id=e.target.getAttribute('data-del-reward');
+    state.rewards=state.rewards.filter(function(x){return x.id!==id;});
+    saveState(); renderAdmin(); renderRewards();
+  });
+
+  on('[data-n-name]','change',function(e){
+    var parts=e.target.getAttribute('data-n-name').split('|');
+    var n=state.skillTree[parts[0]].find(function(x){return x.id===parts[1];});
+    if(n){ n.name=e.target.value; saveState(); }
+  });
+  on('[data-n-xp]','change',function(e){
+    var parts=e.target.getAttribute('data-n-xp').split('|');
+    var n=state.skillTree[parts[0]].find(function(x){return x.id===parts[1];});
+    if(n){ n.xp=Number(e.target.value)||0; saveState(); }
+  });
+  on('[data-del-node]','click',function(e){
+    var parts=e.target.getAttribute('data-del-node').split('|');
+    state.skillTree[parts[0]]=state.skillTree[parts[0]].filter(function(x){return x.id!==parts[1];});
+    saveState(); renderAdmin(); renderSkillTree();
+  });
+
+  on('[data-qp-name]','change',function(e){
+    var id=e.target.getAttribute('data-qp-name');
+    var p=state.penalties.quick.find(function(x){return x.id===id;});
+    if(p){ p.name=e.target.value; saveState(); }
+  });
+  on('[data-qp-xp]','change',function(e){
+    var id=e.target.getAttribute('data-qp-xp');
+    var p=state.penalties.quick.find(function(x){return x.id===id;});
+    if(p){ p.xp=Number(e.target.value)||0; saveState(); }
+  });
+  on('[data-del-qp]','click',function(e){
+    var id=e.target.getAttribute('data-del-qp');
+    state.penalties.quick=state.penalties.quick.filter(function(x){return x.id!==id;});
+    saveState(); renderAdmin(); renderDashboard();
+  });
+
+  on('[data-add]','click',function(e){
+    var key=e.target.getAttribute('data-add');
+    if(key==='level'){ state.levels.push({id:uid('lvl'), title:'New Level', threshold:0}); }
+    else if(key==='daily5'){ state.daily5.push({id:uid('d'), text:'New check-in', xp:10}); }
+    else if(key.indexOf('quest_')===0){ var type=key.split('_')[1]; state.quests[type].push({id:uid('q'), name:'New quest', category:'Business', xp:10}); }
+    else if(key==='achievement'){ state.achievements.push({id:uid('a'), name:'New achievement', desc:'Describe it', metric:'lifetimeXP', target:100}); }
+    else if(key==='reward'){ state.rewards.push({id:uid('r'), name:'New reward', xpRequired:100}); }
+    else if(key.indexOf('node_')===0){ var domain=key.slice(5); state.skillTree[domain].push({id:uid('n'), name:'New milestone', xp:50}); }
+    else if(key==='quickpen'){ state.penalties.quick.push({id:uid('p'), name:'New slip', xp:5}); }
+    saveState(); renderAdmin();
+  });
+
+  $('#adm_export').addEventListener('click', function(){
+    var blob=new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url; a.download='katana-os-backup-'+todayStr()+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  });
+  $('#adm_import_btn').addEventListener('click', function(){ $('#adm_import_file').click(); });
+  $('#adm_import_file').addEventListener('change', function(e){
+    var file=e.target.files[0];
+    if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(){
+      try{
+        var parsed=JSON.parse(reader.result);
+        if(!parsed || typeof parsed!=='object' || !('quests' in parsed) || !('levels' in parsed)){
+          toast('That file doesn\'t look like a Katana OS backup.', 'pen');
+          return;
+        }
+        showConfirm({
+          title:'Import backup?',
+          message:'This will replace all current data with the imported file.',
+          danger:true,
+          requireCheck:true,
+          confirmLabel:'Import',
+          onConfirm:function(){
+            state=deepMerge(defaultState(), parsed);
+            lastLevelIdx=null;
+            saveState(); runRollover(); renderAll();
+            toast('Backup imported.', 'violet');
+          }
+        });
+      }catch(err){
+        toast('Could not read that file — invalid JSON.', 'pen');
+      }
+      $('#adm_import_file').value='';
+    };
+    reader.readAsText(file);
+  });
+
+  $('#adm_reset_progress').addEventListener('click', function(){
+    showConfirm({
+      title:'Reset progress?',
+      message:'All XP, streaks, stats and unlocked achievements will be wiped. Your quests, levels and settings stay as configured.',
+      danger:true, requireCheck:true, confirmLabel:'Reset progress',
+      onConfirm:function(){
+        var fresh=defaultState();
+        state.xp=0; state.lifetimeXP=0;
+        state.categoryXP={Business:0,Content:0,Learning:0,Fitness:0,Nutrition:0};
+        state.sideCompleted=[]; state.unlockedAchievements=[];
+        state.stats=fresh.stats; state.streak=fresh.streak;
+        state.today=fresh.today; state.week=fresh.week; state.xpLog=[];
+        lastLevelIdx=null;
+        saveState(); runRollover(); renderAll();
+        toast('Progress reset.', 'violet');
+      }
+    });
+  });
+  $('#adm_new_month').addEventListener('click', function(){
+    showConfirm({
+      title:'Start a new month?',
+      message:'Season XP resets to 0 and today/this-week checkmarks clear. Lifetime stats, skill tree and achievements are kept.',
+      danger:true, requireCheck:true, confirmLabel:'Start new month',
+      onConfirm:function(){
+        state.xp=0;
+        state.today.daily5Done={}; state.today.dailyQuestDone={}; state.today.perfectDayAwarded=false;
+        state.week.weeklyQuestDone={};
+        state.streak.weekDays=[false,false,false,false,false,false,false];
+        lastLevelIdx=null;
+        saveState(); renderAll();
+        toast('New month started.', 'violet');
+      }
+    });
+  });
+  $('#adm_reset_all').addEventListener('click', function(){
+    showConfirm({
+      title:'Reset everything?',
+      message:'This wipes all progress and restores every quest, level and setting to factory defaults.',
+      danger:true, requireCheck:true, confirmLabel:'Reset everything',
+      onConfirm:function(){
+        state=defaultState();
+        lastLevelIdx=null;
+        saveState(); runRollover(); renderAll();
+        toast('Factory reset complete.', 'violet');
+      }
+    });
+  });
 }
 
-function renderD5Admin(){
-  document.getElementById('d5-tbody').innerHTML=cfg.daily5.map((d,i)=>`
-    <tr data-i="${i}">
-      <td><input type="text" value="${esc(d.icon)}" onchange="cfg.daily5[${i}].icon=this.value"></td>
-      <td><input type="text" value="${esc(d.question)}" onchange="cfg.daily5[${i}].question=this.value"></td>
-      <td><input type="number" value="${d.xp}" onchange="cfg.daily5[${i}].xp=+this.value"></td>
-      <td>${catSel(d.cat,`cfg.daily5[${i}].cat`)}</td>
-      <td><div class="rm-btn" onclick="cfg.daily5.splice(${i},1);renderAdmin()"><i class="fa-solid fa-xmark"></i></div></td>
-    </tr>`).join('');
+/* =========================== render all =========================== */
+function renderAll(){
+  renderTopbar();
+  renderDashboard();
+  renderQuests();
+  renderAchievements();
+  renderRewards();
+  renderSkillTree();
+  renderLog();
+  renderFocusStats();
+  renderAdmin();
 }
 
-function addD5(){cfg.daily5.push({id:'d5_'+Date.now(),icon:'⭐',question:'New check',xp:10,cat:'biz'});renderAdmin();}
+/* =========================== global events =========================== */
+function bindGlobalEvents(){
+  $all('.nav-btn').forEach(function(b){
+    b.addEventListener('click', function(){ switchView(b.dataset.view); });
+  });
+  $all('#questTabs .tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){ currentQuestTab=b.dataset.qtab; renderQuests(); });
+  });
+  $all('#logTabs .tab-btn').forEach(function(b){
+    b.addEventListener('click', function(){ currentLogTab=b.dataset.ltab; renderLog(); });
+  });
+  $all('[data-preset]').forEach(function(b){
+    b.addEventListener('click', function(){ setPreset(Number(b.dataset.preset)); });
+  });
+  $('#timerStartBtn').addEventListener('click', startPauseTimer);
+  $('#timerResetBtn').addEventListener('click', resetTimer);
+  $('#focusNotes').addEventListener('blur', function(e){ state.focus.notes=e.target.value; saveState(); });
 
-function renderQAdmin(type){
-  const arr=type==='daily'?cfg.dailyQuests:type==='weekly'?cfg.weeklyQuests:cfg.sideQuests;
-  const id=type==='daily'?'dq-tbody':type==='weekly'?'wq-tbody':'sq-tbody';
-  const pathBase=type==='daily'?'cfg.dailyQuests':type==='weekly'?'cfg.weeklyQuests':'cfg.sideQuests';
-  document.getElementById(id).innerHTML=arr.map((q,i)=>`
-    <tr>
-      <td><input type="text" value="${esc(q.name)}" onchange="${pathBase}[${i}].name=this.value"></td>
-      <td><input type="number" value="${q.xp}" onchange="${pathBase}[${i}].xp=+this.value;buildQuestMap()"></td>
-      <td>${catSel(q.cat,`${pathBase}[${i}].cat`)}</td>
-      <td><input type="text" value="${esc(q.bonus||'')}" placeholder="Bonus note..." onchange="${pathBase}[${i}].bonus=this.value"></td>
-      <td><div class="rm-btn" onclick="${pathBase}.splice(${i},1);buildQuestMap();renderAdmin()"><i class="fa-solid fa-xmark"></i></div></td>
-    </tr>`).join('');
+  $('#customPenBtn').addEventListener('click', function(){
+    var nameEl=$('#customPenName'), xpEl=$('#customPenXP');
+    var name=nameEl.value.trim();
+    var amt=Number(xpEl.value)||5;
+    if(!name){ toast('Describe the slip first.', 'pen'); return; }
+    applyPenalty(amt, name);
+    nameEl.value=''; xpEl.value='5';
+    saveState(); renderAll();
+  });
+
+  document.addEventListener('keydown', function(e){
+    var tag=(document.activeElement && document.activeElement.tagName) || '';
+    if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT') return;
+    var map={'1':'dashboard','2':'quests','3':'achievements','4':'rewards','5':'skilltree','6':'focus','7':'log'};
+    if(map[e.key]){ switchView(map[e.key]); }
+    else if(e.key==='e' || e.key==='E'){ switchView('admin'); }
+  });
 }
 
-function addQ(type){
-  const arr=type==='daily'?cfg.dailyQuests:type==='weekly'?cfg.weeklyQuests:cfg.sideQuests;
-  arr.push({id:type+'_'+Date.now(),name:'New quest',xp:20,cat:'biz',bonus:''});
-  buildQuestMap();renderAdmin();
+/* =========================== init =========================== */
+function init(){
+  state=loadState();
+  runRollover();
+  lastLevelIdx=levelInfo().idx;
+  switchView('dashboard');
+  setPreset(25);
+  bindGlobalEvents();
+  renderAll();
+  setInterval(runRollover, 60000);
 }
-
-function renderAchAdmin(){
-  document.getElementById('ach-tbody').innerHTML=cfg.achievements.map((a,i)=>`
-    <tr>
-      <td><input type="text" value="${esc(a.icon)}" onchange="cfg.achievements[${i}].icon=this.value"></td>
-      <td><input type="text" value="${esc(a.name)}" onchange="cfg.achievements[${i}].name=this.value"></td>
-      <td><input type="text" value="${esc(a.desc)}" onchange="cfg.achievements[${i}].desc=this.value"></td>
-      <td><input type="number" value="${a.xpReward}" onchange="cfg.achievements[${i}].xpReward=+this.value"></td>
-      <td><input type="number" value="${a.goal}" onchange="cfg.achievements[${i}].goal=+this.value"></td>
-      <td><div class="rm-btn" onclick="cfg.achievements.splice(${i},1);renderAdmin()"><i class="fa-solid fa-xmark"></i></div></td>
-    </tr>`).join('');
-}
-function addAch(){cfg.achievements.push({id:'ach_'+Date.now(),icon:'⭐',name:'New Achievement',desc:'Description',xpReward:50,field:'custom_'+Date.now(),goal:10});renderAdmin();}
-
-function renderRwAdmin(){
-  document.getElementById('rw-tbody').innerHTML=cfg.rewards.map((r,i)=>`
-    <tr>
-      <td><input type="text" value="${esc(r.icon)}" onchange="cfg.rewards[${i}].icon=this.value"></td>
-      <td><input type="text" value="${esc(r.name)}" onchange="cfg.rewards[${i}].name=this.value"></td>
-      <td><input type="text" value="${esc(r.desc)}" onchange="cfg.rewards[${i}].desc=this.value"></td>
-      <td><input type="number" value="${r.threshold}" onchange="cfg.rewards[${i}].threshold=+this.value"></td>
-      <td><div class="rm-btn" onclick="cfg.rewards.splice(${i},1);renderAdmin()"><i class="fa-solid fa-xmark"></i></div></td>
-    </tr>`).join('');
-}
-function addRw(){cfg.rewards.push({id:'rw_'+Date.now(),icon:'🎁',name:'New Reward',desc:'Description',threshold:500});renderAdmin();}
-
-function renderLvAdmin(){
-  document.getElementById('lv-tbody').innerHTML=cfg.levels.map((l,i)=>`
-    <tr>
-      <td><input type="number" value="${l.lv}" onchange="cfg.levels[${i}].lv=+this.value"></td>
-      <td><input type="text" value="${esc(l.title)}" onchange="cfg.levels[${i}].title=this.value"></td>
-      <td><input type="number" value="${l.xp}" onchange="cfg.levels[${i}].xp=+this.value"></td>
-      <td><div class="rm-btn" onclick="cfg.levels.splice(${i},1);renderAdmin()"><i class="fa-solid fa-xmark"></i></div></td>
-    </tr>`).join('');
-}
-function addLvl(){cfg.levels.push({lv:cfg.levels.length+1,title:'New Level',xp:99999});renderAdmin();}
-
-function catSel(cur,path){
-  const cats=['biz','content','learn','fit','nut'];
-  const labels={biz:'Business',content:'Content',learn:'Learning',fit:'Fitness',nut:'Nutrition'};
-  return`<select onchange="${path}=this.value">${cats.map(c=>`<option value="${c}"${c===cur?' selected':''}>${labels[c]}</option>`).join('')}</select>`;
-}
-
-function esc(s){return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
-
-function saveAll(){persist();renderAll();toast('✓ Saved','All changes applied','t-ach');}
-function exportCfg(){
-  const b=new Blob([JSON.stringify({cfg,prog},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='katana-backup.json';a.click();
-}
-function importCfg(){document.getElementById('import-file').click();}
-function doImport(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.cfg)cfg=d.cfg;if(d.prog)prog={...freshProg(),...d.prog};buildQuestMap();persist();renderAll();renderAdmin();toast('✓ Imported','Config loaded successfully','t-ach');}catch(err){alert('Invalid JSON file');}};
-  r.readAsText(f);
-}
-
-function resetProg(){
-  if(!confirm('Reset all XP and progress? Config kept.')) return;
-  prog=freshProg();prog.lastDate=new Date().toDateString();
-  persist();renderAll();toast('Reset','Progress cleared','t-ach');
-}
-function newMonth(){
-  if(!confirm('Start a new month? This resets XP and all quest completions but keeps your config.')) return;
-  const kept={achUnlocked:[...prog.achUnlocked],catXP:{...prog.catXP}};
-  prog=freshProg();prog.lastDate=new Date().toDateString();
-  prog.achUnlocked=kept.achUnlocked;
-  Object.keys(kept.catXP).forEach(k=>prog.catXP[k]=(prog.catXP[k]||0)+kept.catXP[k]);
-  persist();renderAll();toast('New Month!','XP reset. Keep the momentum.','t-ach');
-}
-function resetAll(){
-  if(!confirm('Reset EVERYTHING including config? Cannot be undone.')) return;
-  localStorage.removeItem(SK);
-  cfg=JSON.parse(JSON.stringify(DEF));
-  prog=freshProg();prog.lastDate=new Date().toDateString();
-  buildQuestMap();persist();renderAll();renderAdmin();
-}
-
-// ── NAV ─────────────────────────────────────
-const TITLES={dashboard:'COMMAND CENTER',quests:'QUEST BOARD',achievements:'ACHIEVEMENTS',rewards:'REWARDS',skills:'SKILL TREE',timer:'FOCUS TIMER',log:'XP LOG',admin:'SYSTEM EDITOR'};
-const VIEW_ORDER=['dashboard','quests','achievements','rewards','skills','timer','log','admin'];
-
-function nav(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
-  const btns=document.querySelectorAll('.nav-btn');
-  // match by onclick attribute
-  btns.forEach(b=>{if(b.getAttribute('onclick')===`nav('${name}')`) b.classList.add('active');});
-  document.getElementById('hud-title').textContent=TITLES[name]||name.toUpperCase();
-  if(name==='admin') renderAdmin();
-}
-
-function qTab(tab,el){
-  document.querySelectorAll('.qpanel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.qtab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('qp-'+tab).classList.add('active');
-  el.classList.add('active');
-}
-
-// ── BOOT ────────────────────────────────────
-loadData();
-buildQuestMap();
-renderAll();
-
-document.addEventListener('keydown',e=>{
-  if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return;
-  const map={1:'dashboard',2:'quests',3:'achievements',4:'rewards',5:'skills',6:'timer',7:'log',e:'admin'};
-  if(map[e.key]) nav(map[e.key]);
-});
+init();
 </script>
 </body>
 </html>
